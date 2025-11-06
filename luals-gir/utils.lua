@@ -20,6 +20,29 @@ function M.split(str, sep)
 end
 
 ---@param str string
+---@param prefix string
+---@return boolean
+function M.starts_with(str, prefix)
+  local prefix_len = prefix:len()
+
+  if prefix_len > str:len() then
+    return false
+  end
+
+  local str_slice = str:sub(1, prefix_len)
+  return str_slice == prefix
+end
+
+---@param str string
+---@param prefix string
+---@return string?
+function M.remove_prefix(str, prefix)
+  if M.starts_with(str, prefix) then
+    return str:sub(prefix:len() + 1)
+  end
+end
+
+---@param str string
 ---@param suffix string
 ---@return boolean
 function M.ends_with(str, suffix)
