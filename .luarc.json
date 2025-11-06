@@ -1,0 +1,6 @@
+{
+  "runtime": { "version": "LuaJIT" },
+  "workspace": {
+    "library": ["${env:LUA_LS_PATH}"]
+  }
+}
