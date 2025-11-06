@@ -2,14 +2,21 @@ local utils = require("luals-gir.utils")
 
 local M = {}
 
----@param gir_filename string
----@return string
-function M.process_gir_filename(gir_filename)
-  local res = gir_filename
+---@class luals_gir.filename_pair
+---@field gir string
+---@field lua string
 
-  if not utils.ends_with(gir_filename, ".gir") then
-    res = res .. ".gir"
+---@param filename string
+---@return luals_gir.filename_pair
+function M.process_gir_filename(filename)
+  local res = { gir = filename }
+  local basename = utils.remove_suffix(filename, ".gir")
+
+  if basename == nil then
+    res.gir = res.gir .. ".gir"
+    basename = filename
   end
+  res.lua = basename .. ".lua"
 
   return res
 end

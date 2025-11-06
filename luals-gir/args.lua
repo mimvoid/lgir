@@ -9,7 +9,7 @@ Arguments:
   [GIRS]...     The GIR file(s) to search for
 
 Options:
-  --output, -o  Output file
+  --output, -o  Output directory
   --version     Print version
   --help, -h    Print help]]
 
@@ -85,7 +85,7 @@ return function()
   end
 
   if args.output == nil then
-    print("No output file provided!")
+    print("No output directory provided!")
     os.exit(1)
   elseif #args.girs == 0 then
     print("No gir files provided!")

@@ -56,6 +56,23 @@ function M.ends_with(str, suffix)
   return str_slice == suffix
 end
 
+---@param str string
+---@param suffix string
+---@return string?
+function M.remove_suffix(str, suffix)
+  local suffix_len = suffix:len()
+  if suffix_len > str:len() then
+    return nil
+  end
+
+  local str_slice = str:sub(-suffix_len)
+  if str_slice ~= suffix then
+    return nil
+  end
+
+  return str:sub(0, -suffix_len - 1)
+end
+
 ---@generic T
 ---@generic E
 ---@param array T[]
