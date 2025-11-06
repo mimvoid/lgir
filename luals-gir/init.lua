@@ -1,4 +1,4 @@
-local utils = require("luals-gir.utils")
+local paths = require("luals-gir.paths.init")
 
 local args = arg
 local gir_filenames = {}
@@ -21,16 +21,11 @@ end
 
 -- TODO: verify that gir filenames are well-formed
 
-local datadirs_env = os.getenv("XDG_DATA_DIRS")
-if datadirs_env == nil then
-  error("Could not find XDG_DATA_DIRS")
+local gir_dirs = paths.gir_dirs()
+if gir_dirs == nil then
+  error("Could not find GIR directories")
   os.exit(1)
 end
-
-local datadirs = utils.split(datadirs_env, ":")
-local gir_dirs = utils.map(datadirs, function(dir)
-  return dir .. "/gir-1.0"
-end)
 
 for _, filename in ipairs(gir_filenames) do
   -- TODO: filter by package name
