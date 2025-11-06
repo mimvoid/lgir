@@ -2,7 +2,7 @@ local paths = require("luals-gir.paths.init")
 local reader = require("luals-gir.reader.init")
 local utils = require("luals-gir.utils")
 local args = require("luals-gir.args")
-local inspect = require("inspect")
+local write = require("luals-gir.write.init")
 
 local parsed_args = args()
 local girs = utils.map(parsed_args.girs, paths.process_gir_filename)
@@ -20,11 +20,11 @@ for _, filename in ipairs(girs) do
     os.exit(1)
   end
 
-  local xml = reader.load_gir(file)
-  if xml == nil then
+  local gir_table = reader.load_gir(file)
+  if gir_table == nil then
     print("Hm, " .. filename .. " doesn't seem to be a valid GIR file")
     os.exit(1)
   end
 
-  print(inspect(xml))
+  write(parsed_args.output, gir_table)
 end
