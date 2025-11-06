@@ -4,7 +4,7 @@ local M = {}
 ---@param str string
 ---@param sep string?
 ---@return string[]
-M.split = function(str, sep)
+function M.split(str, sep)
   -- Set the separator to a space by default
   if sep == nil then
     sep = "%s"
@@ -22,7 +22,7 @@ end
 ---@param str string
 ---@param suffix string
 ---@return boolean
-M.ends_with = function(str, suffix)
+function M.ends_with(str, suffix)
   local suffix_len = suffix:len()
 
   if suffix_len > str:len() then
@@ -38,7 +38,7 @@ end
 ---@param array T[]
 ---@param fun fun(T): E
 ---@return E[]
-M.map = function(array, fun)
+function M.map(array, fun)
   local res = {}
   for _, i in ipairs(array) do
     table.insert(res, fun(i))
