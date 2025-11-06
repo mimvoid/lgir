@@ -9,7 +9,7 @@ for i, a in ipairs(args) do
       error("Command line flags have not been implemented yet!")
       os.exit(1)
     else
-      table.insert(gir_filenames, a)
+      table.insert(gir_filenames, paths.process_gir_filename(a))
     end
   end
 end
@@ -18,8 +18,6 @@ if #gir_filenames == 0 then
   error("No gir files provided")
   os.exit(1)
 end
-
--- TODO: verify that gir filenames are well-formed
 
 local gir_dirs = paths.gir_dirs()
 if gir_dirs == nil then

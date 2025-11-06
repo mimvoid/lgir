@@ -19,6 +19,20 @@ M.split = function(str, sep)
   return split_strs
 end
 
+---@param str string
+---@param suffix string
+---@return boolean
+M.ends_with = function(str, suffix)
+  local suffix_len = suffix:len()
+
+  if suffix_len > str:len() then
+    return false
+  end
+
+  local str_slice = str:sub(-suffix_len)
+  return str_slice == suffix
+end
+
 ---@generic T
 ---@generic E
 ---@param array T[]
