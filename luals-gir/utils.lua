@@ -6,14 +6,13 @@ local M = {}
 ---@param sep string?
 ---@return string[]
 function M.split(str, sep)
-  -- Set the separator to a space by default
   if sep == nil then
-    sep = "%s"
+    sep = "%s" -- Default to a space for the separator
   end
 
   local split_strs = {}
 
-  for s in str:gmatch("([^" .. sep .. "]+)") do
+  for s in str:gmatch(string.format("([^%s]+)", sep)) do
     table.insert(split_strs, s)
   end
 
@@ -24,14 +23,7 @@ end
 ---@param prefix string
 ---@return boolean
 function M.starts_with(str, prefix)
-  local prefix_len = prefix:len()
-
-  if prefix_len > str:len() then
-    return false
-  end
-
-  local str_slice = str:sub(1, prefix_len)
-  return str_slice == prefix
+  return str:sub(1, prefix:len()) == prefix
 end
 
 ---@param str string
@@ -47,59 +39,43 @@ end
 ---@param suffix string
 ---@return boolean
 function M.ends_with(str, suffix)
-  local suffix_len = suffix:len()
-
-  if suffix_len > str:len() then
-    return false
-  end
-
-  local str_slice = str:sub(-suffix_len)
-  return str_slice == suffix
+  return str:sub(-suffix:len()) == suffix
 end
 
 ---@param str string
 ---@param suffix string
 ---@return string?
 function M.remove_suffix(str, suffix)
-  local suffix_len = suffix:len()
-  if suffix_len > str:len() then
-    return nil
+  if M.ends_with(str, suffix) then
+    return str:sub(1, -suffix:len() - 1)
   end
-
-  local str_slice = str:sub(-suffix_len)
-  if str_slice ~= suffix then
-    return nil
-  end
-
-  return str:sub(0, -suffix_len - 1)
 end
 
----@param input_table table
+---@param tabl table
 ---@param ... string|integer Nested table keys or indices
 ---@return any The nested value, or nil if not found
-function M.get_nested(input_table, ...)
+function M.get_nested(tabl, ...)
   for _, key in ipairs({ ... }) do
-    local child = input_table[key]
-    if child == nil then
+    if type(tabl) ~= "table" or tabl[key] == nil then
       return nil
     end
-    input_table = child
+
+    tabl = tabl[key]
   end
 
-  return input_table
+  return tabl
 end
 
----@generic T
----@generic E
+---@generic T, E
 ---@param array T[]
----@param fun fun(T): E
+---@param func fun(T): E
 ---@return E[]
-function M.map(array, fun)
-  local res = {}
-  for _, i in ipairs(array) do
-    table.insert(res, fun(i))
+function M.map(array, func)
+  local result = {}
+  for i, v in ipairs(array) do
+    result[i] = func(v)
   end
-  return res
+  return result
 end
 
 return M
