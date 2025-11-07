@@ -31,6 +31,9 @@
 
             shellHook = ''
               export LUA_LS_PATH='${luaEnv}/share/lua/5.1'
+
+              # For whatever reason, lua doesn't include relative directories by default
+              export LUA_PATH="./?/init.lua;;"
             '';
           };
       });
