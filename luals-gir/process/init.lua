@@ -1,6 +1,6 @@
 local table = table
 
----@class luals_gir.gir_data.namespace
+---@class luals_gir.gir.namespace
 ---@field name string
 ---@field version string
 ---@field bitfield? table[]
@@ -10,8 +10,8 @@ local table = table
 ---@field callback? table[]
 ---@field functions? table[]
 
----@class luals_gir.gir_data
----@field namespace luals_gir.gir_data.namespace
+---@class luals_gir.gir
+---@field namespace luals_gir.gir.namespace
 ---@field doc_format? string
 ---@field include { name: string, version: string }[]
 ---@field pkg? { name: string }
@@ -20,7 +20,7 @@ local table = table
 ---be documented, or that are currently unimplemented.
 ---NOTE: currenty non-exhaustive
 ---@param gir_table table
----@return luals_gir.gir_data?
+---@return luals_gir.gir?
 return function(gir_table)
   local repository = gir_table.repository
   local namespace = repository and repository.namespace

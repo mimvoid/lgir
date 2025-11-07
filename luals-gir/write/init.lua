@@ -1,7 +1,7 @@
 local string, io = string, io
 local inspect = require("inspect")
 
----@param namespace luals_gir.gir_data.namespace
+---@param namespace luals_gir.gir.namespace
 ---@param pkg_name string?
 local function write_header(file, namespace, pkg_name)
   local template = [[
@@ -18,7 +18,7 @@ local function write_header(file, namespace, pkg_name)
 end
 
 ---@param output_filename string
----@param gir_data luals_gir.gir_data
+---@param gir_data luals_gir.gir
 ---@return string? err_msg
 return function(output_filename, gir_data)
   local file, err = io.open(output_filename, "w")
