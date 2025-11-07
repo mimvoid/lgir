@@ -1,5 +1,4 @@
-local table = table
-local process_enums = require('luals-gir.process.enums')
+local process_enums = require("luals-gir.process.enums")
 local utils = require("luals-gir.utils")
 
 ---@class luals_gir.gir.namespace
@@ -30,26 +29,24 @@ return function(gir_table)
   if not repository or not namespace or not namespace._attr then
     return nil
   end
-  if not namespace._attr.name or not namespace._attr.version then
+
+  local ns = { name = namespace._attr.name, version = namespace._attr.version }
+  if not ns.name or not ns.version then
     return nil
   end
 
   local res = {
-    namespace = {
-      name = namespace._attr.name,
-      version = namespace._attr.version,
-    },
+    namespace = ns,
     include = {},
     doc_format = utils.get_nested(repository, "doc:format", "_attr", "name"),
   }
 
   if repository.include ~= nil then
-    for i = 1, #repository.include do
-      local dep = utils.get_nested(repository.include, i, "_attr")
-      if dep and dep.name and dep.version then
-        table.insert(res.include, { name = dep.name, version = dep.version })
+    res.include = utils.filter_map(repository.include, function(dep)
+      if dep._attr and dep._attr.name and dep._attr.version then
+        return { name = dep._attr.name, version = dep._attr.version }
       end
-    end
+    end)
   end
 
   local pkg_name = utils.get_nested(repository, "package", "_attr", "name")
