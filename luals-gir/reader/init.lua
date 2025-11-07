@@ -1,6 +1,7 @@
 local io = io
 local xml2lua = require("xml2lua")
 local handler = require("xmlhandler.tree")
+local process = require("luals-gir.reader.process")
 
 local M = {}
 
@@ -20,14 +21,6 @@ function M.find_gir_file(gir_filename, dirs)
   end
 end
 
----NOTE: currenty non-exhaustive
----@param gir_table table
----@return boolean
-local function is_valid_gir(gir_table)
-  local repository = gir_table.repository
-  return repository ~= nil and repository.namespace ~= nil
-end
-
 ---@param gir_file file*
 ---@return table?
 function M.load_gir(gir_file)
@@ -44,9 +37,7 @@ function M.load_gir(gir_file)
   local parser = xml2lua.parser(gir_handler)
   parser:parse(contents)
 
-  if is_valid_gir(gir_handler.root) then
-    return gir_handler.root
-  end
+  return process(gir_handler.root)
 end
 
 return M
