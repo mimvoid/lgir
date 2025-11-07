@@ -1,3 +1,4 @@
+local table = table
 local M = {}
 
 ---Split a string by a separator
@@ -71,6 +72,21 @@ function M.remove_suffix(str, suffix)
   end
 
   return str:sub(0, -suffix_len - 1)
+end
+
+---@param input_table table
+---@param ... string|integer Nested table keys or indices
+---@return any The nested value, or nil if not found
+function M.get_nested(input_table, ...)
+  for _, key in ipairs({ ... }) do
+    local child = input_table[key]
+    if child == nil then
+      return nil
+    end
+    input_table = child
+  end
+
+  return input_table
 end
 
 ---@generic T

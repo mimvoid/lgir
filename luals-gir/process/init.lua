@@ -1,4 +1,5 @@
 local table = table
+local utils = require("luals-gir.utils")
 
 ---@class luals_gir.gir.namespace
 ---@field name string
@@ -25,41 +26,34 @@ return function(gir_table)
   local repository = gir_table.repository
   local namespace = repository and repository.namespace
 
-  if repository == nil or namespace == nil or namespace._attr == nil then
+  if not repository or not namespace or not namespace._attr then
     return nil
   end
-
-  local name, version = namespace._attr.name, namespace._attr.version
-  if name == nil or version == nil then
+  if not namespace._attr.name or not namespace._attr.version then
     return nil
   end
 
   local res = {
     namespace = {
-      name = name,
-      version = version,
+      name = namespace._attr.name,
+      version = namespace._attr.version,
     },
     include = {},
+    doc_format = utils.get_nested(repository, "doc:format", "_attr", "name"),
   }
-
-  local doc = repository["doc:format"]
-  if doc ~= nil and doc._attr ~= nil and doc._attr.name ~= nil then
-    res.doc_format = doc._attr.name
-  end
 
   if repository.include ~= nil then
     for i = 1, #repository.include do
-      local dep = repository.include[i]
-
-      if dep and dep._attr and dep._attr.name and dep._attr.version then
-        table.insert(res.include, { name = dep._attr.name, version = dep._attr.version })
+      local dep = utils.get_nested(repository.include, i, "_attr")
+      if dep and dep.name and dep.version then
+        table.insert(res.include, { name = dep.name, version = dep.version })
       end
     end
   end
 
-  local pkg = repository["package"]
-  if pkg and pkg._attr and pkg._attr.name then
-    res.pkg = { name = pkg._attr.name }
+  local pkg_name = utils.get_nested(repository, "package", "_attr", "name")
+  if pkg_name then
+    res.pkg = { name = pkg_name }
   end
 
   for _, tag in ipairs({ "enumeration", "bitfield", "record", "class", "callback" }) do
