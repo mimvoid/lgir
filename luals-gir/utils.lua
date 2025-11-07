@@ -66,6 +66,25 @@ function M.get_nested(tabl, ...)
   return tabl
 end
 
+---@generic T
+---@param array T[]
+---@param func? fun(T): boolean
+---@return T[]
+function M.filter(array, func)
+  local result = {}
+
+  for i = 1, #array do
+    local item = array[i]
+
+    -- Filter nil or false items by default, otherwise, call the function
+    if (func == nil and item) or (func ~= nil and func(item)) then
+      table.insert(result, item)
+    end
+  end
+
+  return result
+end
+
 ---@generic T, E
 ---@param array T[]
 ---@param func fun(T): E
@@ -75,6 +94,24 @@ function M.map(array, func)
   for i, v in ipairs(array) do
     result[i] = func(v)
   end
+  return result
+end
+
+---Performs a map operation on the table and filters out any nil or false results.
+---@generic T, E
+---@param array T[]
+---@param func fun(T): E?
+---@return E[]
+function M.filter_map(array, func)
+  local result = {}
+
+  for i = 1, #array do
+    local mapped_item = func(array[i])
+    if mapped_item then
+      table.insert(result, mapped_item)
+    end
+  end
+
   return result
 end
 
