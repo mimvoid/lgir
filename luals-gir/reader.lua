@@ -1,7 +1,6 @@
 local io = io
 local xml2lua = require("xml2lua")
 local handler = require("xmlhandler.tree")
-local process = require("luals-gir.reader.process")
 
 local M = {}
 
@@ -22,8 +21,8 @@ function M.find_gir_file(gir_filename, dirs)
 end
 
 ---@param gir_file file*
----@return table?
-function M.load_gir(gir_file)
+---@return table
+function M.parse_gir(gir_file)
   local contents = gir_file:read("*a")
   gir_file:close()
 
@@ -37,7 +36,7 @@ function M.load_gir(gir_file)
   local parser = xml2lua.parser(gir_handler)
   parser:parse(contents)
 
-  return process(gir_handler.root)
+  return gir_handler.root
 end
 
 return M
