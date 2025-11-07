@@ -1,4 +1,5 @@
-local string, io = string, io
+local string, table, io = string, table, io
+local enums = require("luals-gir.write.enums")
 local inspect = require("inspect")
 
 ---@param namespace luals_gir.gir.namespace
@@ -30,7 +31,13 @@ return function(output_filename, gir_data)
   write_header(file, namespace, gir_data.pkg ~= nil and gir_data.pkg.name or nil)
 
   -- TODO: actually generate type annotations
-  file:write("return ", inspect(gir_data))
+
+  local enum_lines = enums(namespace)
+  if enum_lines ~= nil then
+    file:write(table.concat(enum_lines, "\n"))
+  end
+
+  file:write("\nreturn ", inspect(gir_data))
 
   file:close()
 end

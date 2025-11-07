@@ -1,11 +1,12 @@
 local table = table
+local process_enums = require('luals-gir.process.enums')
 local utils = require("luals-gir.utils")
 
 ---@class luals_gir.gir.namespace
 ---@field name string
 ---@field version string
 ---@field bitfield? table[]
----@field enumeration? table[]
+---@field enumeration? luals_gir.gir.enum[]
 ---@field record? table[]
 ---@field class? table[]
 ---@field callback? table[]
@@ -56,9 +57,10 @@ return function(gir_table)
     res.pkg = { name = pkg_name }
   end
 
-  for _, tag in ipairs({ "enumeration", "bitfield", "record", "class", "callback" }) do
+  for _, tag in ipairs({ "bitfield", "record", "class", "callback" }) do
     res.namespace[tag] = namespace[tag]
   end
+  res.namespace.enumeration = process_enums(namespace)
   res.namespace.functions = namespace["function"]
 
   return res
