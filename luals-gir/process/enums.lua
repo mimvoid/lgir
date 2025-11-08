@@ -37,8 +37,18 @@ local function process_enum(enumeration)
   return enum
 end
 
+---@param namespace table
+---@return luals_gir.gir.enum[]? enums, luals_gir.gir.enum[]? bitfields
 return function(namespace)
+  local enums = nil
+  local bitfields = nil
+
   if namespace.enumeration ~= nil then
-    return utils.filter_map(namespace.enumeration, process_enum)
+    enums = utils.filter_map(namespace.enumeration, process_enum)
   end
+  if namespace.bitfield ~= nil then
+    bitfields = utils.filter_map(namespace.bitfield, process_enum)
+  end
+
+  return enums, bitfields
 end
