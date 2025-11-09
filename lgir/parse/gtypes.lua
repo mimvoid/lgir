@@ -1,4 +1,4 @@
--- Table of basic GLib types and a few GObject types mapped to Lua types
+-- Table of basic GLib types mapped to Lua types
 -- See: https://docs.gtk.org/glib/types.html
 return {
   none = "nil",
@@ -31,10 +31,8 @@ return {
   gfloat = "number",
   gdouble = "number",
 
+  gpointer = "lightuserdata",
   -- TODO: I'm not sure how to represent these
-  gpointer = "any",
   gintptr = "any",
   guintptr = "any",
-
-  ["GObject.Callback"] = "function",
 }
