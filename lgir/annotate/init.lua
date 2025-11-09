@@ -7,6 +7,7 @@ local write_callbacks = require("lgir.annotate.callbacks")
 
 ---@param file file*
 ---@param typelib table
+---@return nil
 local function write_header(file, typelib)
   local template = [[
 ---@meta
@@ -27,6 +28,9 @@ local function write_header(file, typelib)
   end
 end
 
+---@param gir_docs lgir.gir_docs
+---@param filename string
+---@return nil
 return function(gir_docs, filename)
   local typelib = lgi.require(gir_docs.name, gir_docs.version):_resolve(true)
 

@@ -13,6 +13,10 @@ Options:
   --version     Print version
   --help, -h    Print help]]
 
+---@param i integer
+---@param long_arg string
+---@param short_arg? string
+---@return string? value, integer skip
 local function parse_arg_value(i, long_arg, short_arg)
   local a = arg[i]
 
@@ -44,11 +48,7 @@ local function parse_arg_value(i, long_arg, short_arg)
   return value, skip
 end
 
----@class lgir.args
----@field girs string[]
----@field output string
-
----@return lgir.args
+---@return { girs: string[], output: string }
 return function()
   local args = {
     girs = {},

@@ -4,10 +4,10 @@ local parse_functions = require("lgir.parse.functions")
 ---@class lgir.gir_docs
 ---@field name string
 ---@field version string
----@field enums? table
----@field bitfields? table
----@field functions? table
----@field callbacks? table
+---@field enums? table<string, lgir.gir_docs.enum>
+---@field bitfields? table<string, lgir.gir_docs.enum>
+---@field functions? table<string, lgir.gir_docs.func>
+---@field callbacks? table<string, lgir.gir_docs.func>
 ---@field structs? table
 ---@field classes? table
 

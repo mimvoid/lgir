@@ -6,6 +6,8 @@ local helpers = require("lgir.parse.helpers")
 ---@field params table<string, { type: string, doc: string? }>
 
 -- FIX: these parameters are not in order
+---@param param table
+---@return string? name, { type: string, doc: string? }? info
 local function process_param(param)
   local result = { type = helpers.get_type(param) }
   if not result.type then
@@ -21,6 +23,8 @@ local function process_param(param)
   return name, result
 end
 
+---@param return_value table
+---@return { type: string, doc: string? }?
 local function parse_return_value(return_value)
   local type_name = helpers.get_type(return_value)
   if type_name ~= nil then
@@ -28,6 +32,8 @@ local function parse_return_value(return_value)
   end
 end
 
+---@param func table
+---@return string? name, lgir.gir_docs.func? result
 local function process_function(func)
   local name = helpers.get_name(func)
   local return_val = func["return-value"]
@@ -58,6 +64,8 @@ local function process_function(func)
   return name, result
 end
 
+---@param functions table
+---@return table<string, lgir.gir_docs.func>
 return function(functions)
   local result = {}
 
