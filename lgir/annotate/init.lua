@@ -3,6 +3,7 @@ local lgi = require("lgi")
 
 local write_enums = require("lgir.annotate.enums")
 local write_funcs = require("lgir.annotate.functions")
+local write_callbacks = require("lgir.annotate.callbacks")
 
 ---@param file file*
 ---@param typelib table
@@ -44,6 +45,9 @@ return function(gir_docs, filename)
   end
   if bit_classes ~= nil then
     file:write("\n", table.concat(bit_classes, "\n"))
+  end
+  if gir_docs.callbacks ~= nil then
+    file:write("\n", table.concat(write_callbacks(typelib._name, gir_docs.callbacks), "\n"))
   end
 
   file:write("\n\n", "---@class ", typelib._name)

@@ -44,6 +44,9 @@ return function(gir_table, path)
   if namespace["function"] ~= nil then
     result.functions = parse_functions(namespace["function"])
   end
+  if namespace.callback ~= nil then
+    result.callbacks = parse_functions(namespace.callback)
+  end
 
   return result
 end
