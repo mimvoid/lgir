@@ -37,6 +37,9 @@ function M.parse_gir(gir_file)
     "callback",
     "function",
     "parameter",
+    "include",
+    "field",
+    "member",
   }
   for i = 1, #noreduce_tags do
     gir_handler.options.noreduce[noreduce_tags[i]] = true
