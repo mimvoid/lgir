@@ -1,5 +1,3 @@
-local string = string
-
 local paths = require("lgir.paths")
 local reader = require("lgir.reader")
 local args = require("lgir.args")
@@ -25,5 +23,5 @@ for i = 1, #parsed_args.girs do
 
   local gir_table = reader.parse_gir(file)
   local gir_docs = parse(gir_table, path)
-  annotate(gir_docs, string.format("%s/%s", parsed_args.output, lua))
+  annotate(gir_docs, ("%s/%s"):format(parsed_args.output, lua))
 end

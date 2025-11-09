@@ -12,7 +12,7 @@ local parse_functions = require("lgir.parse.functions")
 ---@field classes? table
 
 local function err_parse_fail(path)
-  print(string.format("Failed to parse GIR file at " .. path))
+  print("Failed to parse GIR file at " .. path)
   os.exit(1)
 end
 

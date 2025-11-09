@@ -19,10 +19,10 @@ local function write_header(file, typelib)
   if typelib._dependencies ~= nil then
     local deps = {}
     for name, version in pairs(typelib._dependencies) do
-      table.insert(deps, string.format("%s-%s", name, version))
+      table.insert(deps, ("%s-%s"):format(name, version))
     end
 
-    file:write(string.format("\n-- Dependencies: %s", table.concat(deps, ", ")))
+    file:write("\n-- Dependencies: ", table.concat(deps, ", "))
   end
 end
 
@@ -58,8 +58,8 @@ return function(gir_docs, filename)
   file:write("\n", "local ", typelib._name, " = {}")
 
   if typelib._function ~= nil and gir_docs.functions ~= nil then
-    local funcs = table.concat(write_funcs(typelib._name, typelib._function, gir_docs.functions), "\n")
-    file:write("\n\n", funcs)
+    local funcs = write_funcs(typelib._name, typelib._function, gir_docs.functions)
+    file:write("\n", table.concat(funcs, "\n"))
   end
 
   file:close()

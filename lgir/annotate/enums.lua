@@ -15,7 +15,7 @@ local function annotate_enum_class(info, docs)
 
   for member, _ in pairs(info) do
     if member:sub(1, 1) ~= "_" then
-      local member_doc = string.format("---@field %s integer", member)
+      local member_doc = ("---@field %s integer"):format(member)
 
       if docs and docs.members[member] ~= nil then
         member_doc = ("%s %s"):format(member_doc, docs.members[member]:gsub("\n", ""))

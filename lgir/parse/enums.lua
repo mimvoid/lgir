@@ -1,4 +1,3 @@
-local string = string
 local helpers = require("lgir.parse.helpers")
 
 ---@class lgir.gir_docs.enum

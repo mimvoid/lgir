@@ -11,7 +11,7 @@ function M.find_gir_file(gir_filename, dirs)
   -- TODO: allow searching by packages
 
   for i = 1, #dirs do
-    local gir_path = dirs[i] .. "/" .. gir_filename
+    local gir_path = ("%s/%s"):format(dirs[i], gir_filename)
     local file = io.open(gir_path)
 
     if file ~= nil then

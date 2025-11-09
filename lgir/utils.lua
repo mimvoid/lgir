@@ -12,7 +12,7 @@ function M.split(str, sep)
 
   local split_strs = {}
 
-  for s in str:gmatch(string.format("([^%s]+)", sep)) do
+  for s in str:gmatch(("([^%s]+)"):format(sep)) do
     table.insert(split_strs, s)
   end
 
