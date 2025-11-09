@@ -1,5 +1,6 @@
 local string, table, io = string, table, io
 local enums = require("luals-gir.write.enums")
+local write_functions = require("luals-gir.write.functions")
 local inspect = require("inspect")
 
 ---@param namespace luals_gir.gir.namespace
@@ -35,6 +36,11 @@ return function(output_filename, gir_data)
   local enum_lines = enums(namespace)
   if enum_lines ~= nil then
     file:write(table.concat(enum_lines, "\n"))
+  end
+
+  local func_lines = write_functions(namespace)
+  if func_lines ~= nil then
+    file:write(table.concat(func_lines, "\n"))
   end
 
   file:write("\nreturn ", inspect(gir_data))

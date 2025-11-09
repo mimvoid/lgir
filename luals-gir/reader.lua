@@ -29,8 +29,17 @@ function M.parse_gir(gir_file)
   local gir_handler = handler:new()
 
   -- Don't reduce children vectors of these tags, even with one child
-  for _, tag in ipairs({ "enumeration", "bitfield", "record", "class", "callback", "function" }) do
-    gir_handler.options.noreduce[tag] = true
+  local noreduce_tags = {
+    "enumeration",
+    "bitfield",
+    "record",
+    "class",
+    "callback",
+    "function",
+    "parameter",
+  }
+  for i = 1, #noreduce_tags do
+    gir_handler.options.noreduce[noreduce_tags[i]] = true
   end
 
   local parser = xml2lua.parser(gir_handler)

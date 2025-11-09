@@ -1,4 +1,5 @@
 local process_enums = require("luals-gir.process.enums")
+local process_funcs = require("luals-gir.process.functions")
 local utils = require("luals-gir.utils")
 
 ---@class luals_gir.gir.namespace
@@ -9,7 +10,7 @@ local utils = require("luals-gir.utils")
 ---@field record? table[]
 ---@field class? table[]
 ---@field callback? table[]
----@field functions? table[]
+---@field functions? luals_gir.gir.func[]
 
 ---@class luals_gir.gir
 ---@field namespace luals_gir.gir.namespace
@@ -59,7 +60,7 @@ return function(gir_table)
   end
 
   res.namespace.enumeration, res.namespace.bitfield = process_enums(namespace)
-  res.namespace.functions = namespace["function"]
+  res.namespace.functions = process_funcs(namespace)
 
   return res
 end
