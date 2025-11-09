@@ -1,9 +1,11 @@
+local parse_constants = require("lgir.parse.constants")
 local parse_enums = require("lgir.parse.enums")
 local parse_functions = require("lgir.parse.functions")
 
 ---@class lgir.gir_docs
 ---@field name string
 ---@field version string
+---@field constants? table<string, string>
 ---@field enums? table<string, lgir.gir_docs.enum>
 ---@field bitfields? table<string, lgir.gir_docs.enum>
 ---@field functions? table<string, lgir.gir_docs.func>
@@ -35,6 +37,9 @@ return function(gir_table, path)
     err_parse_fail(path)
   end
 
+  if namespace.constant ~= nil then
+    result.constants = parse_constants(namespace.constant)
+  end
   if namespace.enumeration ~= nil then
     result.enums = parse_enums(namespace.enumeration)
   end

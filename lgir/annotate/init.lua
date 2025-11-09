@@ -1,6 +1,7 @@
 local string, table = string, table
 local lgi = require("lgi")
 
+local write_constants = require("lgir.annotate.constants")
 local write_enums = require("lgir.annotate.enums")
 local write_funcs = require("lgir.annotate.functions")
 local write_callbacks = require("lgir.annotate.callbacks")
@@ -56,6 +57,9 @@ return function(gir_docs, filename)
 
   file:write("\n\n", "---@class ", typelib._name)
 
+  if typelib._constant ~= nil then
+    file:write("\n", table.concat(write_constants(typelib._constant, gir_docs.constants), "\n"))
+  end
   if enum_fields ~= nil then
     file:write("\n", table.concat(enum_fields, "\n"))
   end
