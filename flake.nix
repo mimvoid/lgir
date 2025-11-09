@@ -8,15 +8,21 @@
     let
       allSystems = nixpkgs.lib.genAttrs nixpkgs.lib.platforms.all;
       toSystems = passPkgs: allSystems (system: passPkgs (import nixpkgs { inherit system; }));
+
+      overlays = import ./nix/overlays.nix;
     in
     {
+      inherit overlays;
+
       devShells = toSystems (pkgs: {
         default =
           let
-            luaEnv = pkgs.luajit.withPackages (
+            inherit (overlays.lgiUnstable { } pkgs) luajit;
+            luaEnv = luajit.withPackages (
               ps: with ps; [
                 xml2lua
                 inspect # for debugging
+                lgi-unstable
               ]
             );
           in
