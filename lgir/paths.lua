@@ -1,13 +1,13 @@
-local utils = require("luals-gir.utils")
+local utils = require("lgir.utils")
 
 local M = {}
 
----@class luals_gir.filename_pair
+---@class lgir.filename_pair
 ---@field gir string
 ---@field lua string
 
 ---@param filename string
----@return luals_gir.filename_pair
+---@return lgir.filename_pair
 function M.process_gir_filename(filename)
   local res = { gir = filename }
   local basename = utils.remove_suffix(filename, ".gir")

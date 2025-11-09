@@ -1,19 +1,19 @@
-local process_enums = require("luals-gir.process.enums")
-local process_funcs = require("luals-gir.process.functions")
-local utils = require("luals-gir.utils")
+local process_enums = require("lgir.process.enums")
+local process_funcs = require("lgir.process.functions")
+local utils = require("lgir.utils")
 
----@class luals_gir.gir.namespace
+---@class lgir.gir.namespace
 ---@field name string
 ---@field version string
----@field bitfield? luals_gir.gir.enum[]
----@field enumeration? luals_gir.gir.enum[]
+---@field bitfield? lgir.gir.enum[]
+---@field enumeration? lgir.gir.enum[]
 ---@field record? table[]
 ---@field class? table[]
 ---@field callback? table[]
----@field functions? luals_gir.gir.func[]
+---@field functions? lgir.gir.func[]
 
----@class luals_gir.gir
----@field namespace luals_gir.gir.namespace
+---@class lgir.gir
+---@field namespace lgir.gir.namespace
 ---@field doc_format? string
 ---@field include { name: string, version: string }[]
 ---@field pkg? { name: string }
@@ -22,7 +22,7 @@ local utils = require("luals-gir.utils")
 ---be documented, or that are currently unimplemented.
 ---NOTE: currenty non-exhaustive
 ---@param gir_table table
----@return luals_gir.gir?
+---@return lgir.gir?
 return function(gir_table)
   local repository = gir_table.repository
   local namespace = repository and repository.namespace

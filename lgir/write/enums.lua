@@ -1,5 +1,5 @@
 local string, table = string, table
-local utils = require("luals-gir.utils")
+local utils = require("lgir.utils")
 
 local function write_enum(namespace_name, enum)
   local lines = {}
@@ -40,7 +40,7 @@ local function write_enums(namespace_name, enums)
   return table.concat(lines, "\n")
 end
 
----@param namespace luals_gir.gir.namespace
+---@param namespace lgir.gir.namespace
 ---@return string[]?
 return function(namespace)
   local lines = {}

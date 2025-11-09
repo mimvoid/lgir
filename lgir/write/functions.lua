@@ -1,7 +1,7 @@
 local string, table = string, table
-local utils = require("luals-gir.utils")
+local utils = require("lgir.utils")
 
----@param func luals_gir.gir.func
+---@param func lgir.gir.func
 local function write_func(func)
   local lines = {""}
 

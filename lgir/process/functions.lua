@@ -1,7 +1,7 @@
-local utils = require("luals-gir.utils")
-local gtypes = require("luals-gir.process.gtypes")
+local utils = require("lgir.utils")
+local gtypes = require("lgir.process.gtypes")
 
----@class luals_gir.gir.func
+---@class lgir.gir.func
 ---@field name string
 ---@field return_value { type: string, doc: string? }
 ---@field params { name: string, type: string, doc: string? }[]
@@ -15,7 +15,7 @@ local function process_param(param)
 
   local result = {
     name = utils.get_nested(param, "_attr", "name"),
-    type = gtypes[param_type] or param_type,
+    type = gtypes.types[param_type] or param_type,
     doc = utils.get_nested(param, "doc", 1),
   }
   if not result.name then
@@ -46,7 +46,7 @@ local function parse_return_value(return_value)
     is_array = true
   end
 
-  local lua_type = gtypes[type_name] or type_name
+  local lua_type = gtypes.types[type_name] or type_name
   if is_array then
     lua_type = lua_type .. "[]"
   end

@@ -1,5 +1,5 @@
 {
-  description = "Flake for luals-gir";
+  description = "Flake for lgir";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
@@ -21,7 +21,7 @@
             );
           in
           pkgs.mkShell {
-            name = "luals-gir";
+            name = "lgir";
 
             nativeBuildInputs = [ pkgs.pkg-config ];
             packages = builtins.attrValues {

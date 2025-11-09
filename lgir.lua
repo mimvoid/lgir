@@ -1,2 +1,2 @@
 -- Simple forwarder to real package
-return require("luals-gir")
+return require("lgir")

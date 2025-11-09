@@ -1,9 +1,9 @@
 local arg = arg
-local utils = require("luals-gir.utils")
+local utils = require("lgir.utils")
 
 local version = "0.1.0"
 local help_str = [[
-Usage: luals-gir [OPTIONS] [GIRS]...
+Usage: lgir [OPTIONS] [GIRS]...
 
 Arguments:
   [GIRS]...     The GIR file(s) to search for
@@ -44,11 +44,11 @@ local function parse_arg_value(i, long_arg, short_arg)
   return value, skip
 end
 
----@class luals_gir.args
+---@class lgir.args
 ---@field girs string[]
 ---@field output string
 
----@return luals_gir.args
+---@return lgir.args
 return function()
   local args = {
     girs = {},

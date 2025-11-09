@@ -1,17 +1,17 @@
-local utils = require("luals-gir.utils")
+local utils = require("lgir.utils")
 
----@class luals_gir.gir.enum_member
+---@class lgir.gir.enum_member
 ---@field name string
 ---@field value string
 ---@field doc? string
 
----@class luals_gir.gir.enum
+---@class lgir.gir.enum
 ---@field name string
 ---@field doc? string
----@field members luals_gir.gir.enum_member[]
+---@field members lgir.gir.enum_member[]
 
 ---@param enumeration table?
----@return luals_gir.gir.enum?
+---@return lgir.gir.enum?
 local function process_enum(enumeration)
   if enumeration == nil then
     return nil
@@ -38,7 +38,7 @@ local function process_enum(enumeration)
 end
 
 ---@param namespace table
----@return luals_gir.gir.enum[]? enums, luals_gir.gir.enum[]? bitfields
+---@return lgir.gir.enum[]? enums, luals_gir.gir.enum[]? bitfields
 return function(namespace)
   local enums = nil
   local bitfields = nil
