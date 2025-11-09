@@ -51,6 +51,17 @@ function M.remove_suffix(str, suffix)
   end
 end
 
+---Creates a table with keys from an array of strings
+---@param list string[]
+---@return table<string, boolean>
+function M.set(list)
+  local result = {}
+  for i = 1, #list do
+    result[list[i]] = true
+  end
+  return result
+end
+
 ---@param tabl table
 ---@param ... string|integer Nested table keys or indices
 ---@return any The nested value, or nil if not found

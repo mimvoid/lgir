@@ -1,6 +1,4 @@
-local utils = require("lgir.utils")
 local helpers = require("lgir.parse.helpers")
-local gtypes = require("lgir.parse.gtypes")
 
 ---@class lgir.gir_docs.func
 ---@field doc? string
@@ -9,48 +7,25 @@ local gtypes = require("lgir.parse.gtypes")
 
 -- FIX: these parameters are not in order
 local function process_param(param)
-  local name = helpers.get_name(param)
-  local param_type = utils.get_nested(param, "type", "_attr", "name")
-
-  if not name or not param_type then
+  local result = { type = helpers.get_type(param) }
+  if not result.type then
     return nil
   end
 
-  -- Change parameter names that are Lua keywords
-  if name == "function" then
-    name = "func"
+  local name = helpers.get_name(param)
+  if not name then
+    return nil
   end
 
-  local result = {
-    type = gtypes[param_type] or param_type,
-    doc = helpers.get_doc(param),
-  }
-
-  if param.nullable == "1" or param["allow-none"] == "1" then
-    result.type = result.type .. "?"
-  end
-
+  result.doc = helpers.get_doc(param)
   return name, result
 end
 
 local function parse_return_value(return_value)
-  local is_array = false
-  local type_name = utils.get_nested(return_value, "type", "_attr", "name")
-
-  if type_name == nil then
-    type_name = utils.get_nested(return_value, "array", "type", "_attr", "name")
-    if type_name == nil then
-      return nil
-    end
-    is_array = true
+  local type_name = helpers.get_type(return_value)
+  if type_name ~= nil then
+    return { type = type_name, doc = helpers.get_doc(return_value) }
   end
-
-  local lua_type = gtypes[type_name] or type_name
-  if is_array then
-    lua_type = lua_type .. "[]"
-  end
-
-  return { type = lua_type, doc = helpers.get_doc(return_value) }
 end
 
 local function process_function(func)

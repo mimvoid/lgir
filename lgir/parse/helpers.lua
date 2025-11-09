@@ -1,17 +1,73 @@
+local table = table
+local gtypes = require("lgir.parse.gtypes")
 local utils = require("lgir.utils")
 
 local M = {}
 
+local keywords = utils.set({
+  "true",
+  "false",
+  "and",
+  "or",
+  "not",
+  "nil",
+  "local",
+  "function",
+  "return",
+  "for",
+  "do",
+  "end",
+  "break",
+  "in",
+  "if",
+  "elseif",
+  "else",
+  "then",
+  "while",
+  "repeat",
+  "until",
+})
+
+---@param name string
+---@return string
+function M.fix_keyword(name)
+  return keywords[name] == nil and name or "_" .. name
+end
+
 ---@param tabl table
 ---@return string? name
 function M.get_name(tabl)
-  return utils.get_nested(tabl, "_attr", "name")
+  local name = utils.get_nested(tabl, "_attr", "name")
+  if name ~= nil then
+    return M.fix_keyword(name)
+  end
 end
 
 ---@param tabl table
 ---@return string? doc
 function M.get_doc(tabl)
   return utils.get_nested(tabl, "doc", 1)
+end
+
+---@param tabl table
+---@return string? type
+function M.get_type(tabl)
+  local is_array = tabl.array ~= nil
+  local type_name = utils.get_nested(is_array and tabl.array or tabl, "type", "_attr", "name")
+
+  if type_name == nil then
+    return nil
+  end
+
+  local type_parts = { gtypes[type_name] or type_name }
+  if is_array then
+    table.insert(type_parts, "[]")
+  end
+  if tabl.nullable == "1" or tabl["allow-none"] == "1" then
+    table.insert(type_parts, "?")
+  end
+
+  return table.concat(type_parts)
 end
 
 return M
