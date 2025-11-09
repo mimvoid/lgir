@@ -4,10 +4,6 @@ local lgi = require("lgi")
 local write_enums = require("lgir.annotate.enums")
 local write_funcs = require("lgir.annotate.functions")
 
-local module_template = [[
----@class %s
-local %s = {}]]
-
 ---@param file file*
 ---@param typelib table
 local function write_header(file, typelib)
@@ -40,14 +36,26 @@ return function(gir_docs, filename)
 
   write_header(file, typelib)
 
-  if typelib._enum ~= nil and gir_docs.enums ~= nil then
-    file:write("\n\n", table.concat(write_enums(typelib._enum, gir_docs.enums), "\n"))
+  local enum_classes, enum_fields = write_enums(typelib._enum, gir_docs.enums)
+  local bit_classes, bit_fields = write_enums(typelib._bitfield, gir_docs.bitfields)
+
+  if enum_classes ~= nil then
+    file:write("\n", table.concat(enum_classes, "\n"))
   end
-  if typelib._bitfield ~= nil and gir_docs.bitfields ~= nil then
-    file:write("\n\n", table.concat(write_enums(typelib._bitfield, gir_docs.bitfields), "\n"))
+  if bit_classes ~= nil then
+    file:write("\n", table.concat(bit_classes, "\n"))
   end
 
-  file:write("\n\n", string.format(module_template, typelib._name, typelib._name))
+  file:write("\n\n", "---@class ", typelib._name)
+
+  if enum_fields ~= nil then
+    file:write("\n", table.concat(enum_fields, "\n"))
+  end
+  if bit_fields ~= nil then
+    file:write("\n", table.concat(bit_fields, "\n"))
+  end
+
+  file:write("\n", "local ", typelib._name, " = {}")
 
   if typelib._function ~= nil and gir_docs.functions ~= nil then
     local funcs = table.concat(write_funcs(typelib._name, typelib._function, gir_docs.functions), "\n")
