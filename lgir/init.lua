@@ -1,12 +1,12 @@
+local string = string
+
 local paths = require("lgir.paths")
 local reader = require("lgir.reader")
-local process = require("lgir.process")
 local args = require("lgir.args")
-local write = require("lgir.write")
-local utils = require("lgir.utils")
+local parse = require("lgir.parse")
+local annotate = require("lgir.annotate")
 
 local parsed_args = args()
-local filename_pairs = utils.map(parsed_args.girs, paths.process_gir_filename)
 
 local gir_dirs = paths.gir_dirs()
 if gir_dirs == nil then
@@ -14,21 +14,16 @@ if gir_dirs == nil then
   os.exit(1)
 end
 
-for i = 1, #filename_pairs do
-  local gir, lua = filename_pairs[i].gir, filename_pairs[i].lua
+for i = 1, #parsed_args.girs do
+  local gir, lua = paths.process_gir_filename(parsed_args.girs[i])
+  local file, path = reader.find_gir_file(gir, gir_dirs)
 
-  local file = reader.find_gir_file(gir, gir_dirs)
-  if file == nil then
+  if file == nil or path == nil then
     print("Could not find GIR file " .. gir)
     os.exit(1)
   end
 
   local gir_table = reader.parse_gir(file)
-  local gir_data = process(gir_table)
-  if gir_data == nil then
-    print("Failed to parse GIR file " .. gir)
-    os.exit(1)
-  end
-
-  write(string.format("%s/%s", parsed_args.output, lua), gir_data)
+  local gir_docs = parse(gir_table, path)
+  annotate(gir_docs, string.format("%s/%s", parsed_args.output, lua))
 end

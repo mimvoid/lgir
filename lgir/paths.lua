@@ -2,23 +2,19 @@ local utils = require("lgir.utils")
 
 local M = {}
 
----@class lgir.filename_pair
----@field gir string
----@field lua string
-
 ---@param filename string
----@return lgir.filename_pair
+---@return string gir, string lua
 function M.process_gir_filename(filename)
-  local res = { gir = filename }
+  local gir = filename
   local basename = utils.remove_suffix(filename, ".gir")
 
   if basename == nil then
-    res.gir = res.gir .. ".gir"
+    gir = gir .. ".gir"
     basename = filename
   end
-  res.lua = basename .. ".lua"
 
-  return res
+  local lua = basename .. ".lua"
+  return gir, lua
 end
 
 ---@return string[]?

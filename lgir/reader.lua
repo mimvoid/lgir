@@ -6,7 +6,7 @@ local M = {}
 
 ---@param gir_filename string
 ---@param dirs string[]
----@return file*?
+---@return file*? file, string? path
 function M.find_gir_file(gir_filename, dirs)
   -- TODO: allow searching by packages
 
@@ -15,7 +15,7 @@ function M.find_gir_file(gir_filename, dirs)
     local file = io.open(gir_path)
 
     if file ~= nil then
-      return file
+      return file, gir_path
     end
   end
 end
