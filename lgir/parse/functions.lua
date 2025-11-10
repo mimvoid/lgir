@@ -3,24 +3,24 @@ local helpers = require("lgir.parse.helpers")
 ---@class lgir.gir_docs.func
 ---@field doc? string
 ---@field return_value { type: string, doc: string? }
----@field params table<string, { type: string, doc: string? }>
+---@field params { name: string, type: string, doc: string? }[]
 
 -- FIX: these parameters are not in order
 ---@param param table
----@return string? name, { type: string, doc: string? }? info
+---@return { name: string, type: string, doc: string? }? info
 local function process_param(param)
   local result = { type = helpers.get_type(param) }
   if not result.type then
     return nil
   end
 
-  local name = helpers.get_name(param)
-  if not name then
+  result.name = helpers.get_name(param)
+  if not result.name then
     return nil
   end
 
   result.doc = helpers.get_doc(param)
-  return name, result
+  return result
 end
 
 ---@param return_value table
@@ -53,10 +53,9 @@ local function process_function(func)
 
   if func.parameters and func.parameters.parameter then
     for i = 1, #func.parameters.parameter do
-      local param_name, param = process_param(func.parameters.parameter[i])
-
-      if param_name and param then
-        result.params[param_name] = param
+      local param = process_param(func.parameters.parameter[i])
+      if param then
+        table.insert(result.params, param)
       end
     end
   end

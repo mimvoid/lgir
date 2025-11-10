@@ -18,10 +18,11 @@ return function(namespace, functions, func_docs)
 
       local param_names = {}
 
-      for param_name, param_data in pairs(docs.params) do
-        table.insert(param_names, param_name)
-        local param_doc = helpers.inline_doc(("---@param %s %s"):format(param_name, param_data.type), param_data.doc)
+      for i = 1, #docs.params do
+        local param = docs.params[i]
 
+        table.insert(param_names, param.name)
+        local param_doc = helpers.inline_doc(("---@param %s %s"):format(param.name, param.type), param.doc)
         table.insert(lines, param_doc)
       end
 
