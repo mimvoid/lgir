@@ -19,6 +19,13 @@ function M.split(str, sep)
   return split_strs
 end
 
+---Trim any leading and trailing whitespace
+---@param str string
+---@return string
+function M.strip(str)
+  return str:match("^%s*(.-)%s*$")
+end
+
 ---@param str string
 ---@param prefix string
 ---@return boolean

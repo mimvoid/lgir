@@ -1,3 +1,5 @@
+local utils = require("lgir.utils")
+
 local M = {}
 
 ---@param doc string
@@ -9,8 +11,8 @@ end
 ---@param str string
 ---@return string
 function M.inline(str)
-  local result, _ = str:gsub("\n", "")
-  return result
+  local lines = utils.map(utils.split(str, "\n"), utils.strip)
+  return table.concat(lines, " ")
 end
 
 ---@param type_annotation string
