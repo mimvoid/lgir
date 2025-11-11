@@ -2,6 +2,9 @@ local table = table
 local utils = require("lgir.utils")
 local helpers = require("lgir.annotate.helpers")
 
+---@param class string
+---@param name string
+---@param docs lgir.gir_docs.func
 local function write_func(class, name, docs)
   local lines = { "" }
 
@@ -19,8 +22,17 @@ local function write_func(class, name, docs)
     table.insert(lines, param_doc)
   end
 
-  local return_doc = helpers.inline_doc("---@return " .. docs.return_value.type, docs.return_value.doc)
-  table.insert(lines, return_doc)
+  local return_parts = { "---@return", docs.return_value.type }
+  if docs.return_value.doc then
+    table.insert(return_parts, "#")
+    table.insert(return_parts, helpers.inline(docs.return_value.doc))
+  end
+  table.insert(lines, table.concat(return_parts, " "))
+
+  for i = 1, #docs.out_params do
+    local out = docs.out_params[i]
+    table.insert(lines, helpers.inline_doc(("---@return %s %s"):format(out.type, out.name), out.doc))
+  end
 
   local sig = ("function %s.%s(%s) end"):format(class, name, table.concat(param_names, ", "))
   table.insert(lines, sig)

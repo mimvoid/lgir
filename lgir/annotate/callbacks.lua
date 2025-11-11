@@ -23,9 +23,14 @@ return function(namespace, callback_docs)
       end
     end
 
-    if info.return_value.doc ~= nil then
-      local doc = helpers.inline(info.return_value.doc)
-      table.insert(lines, ("---@return_ %s result %s"):format(info.return_value.type, doc))
+    -- The return type is also in the function signature, so only write an annotation if documentation exists
+    if info.return_value.doc then
+      table.insert(lines, ("---@return %s # %s"):format(info.return_value.type, helpers.inline(info.return_value.doc)))
+    end
+
+    for i = 1, #info.out_params do
+      local out = info.out_params[i]
+      table.insert(lines, helpers.inline_doc(("---@return %s %s"):format(out.type, out.name), out.doc))
     end
 
     table.insert(

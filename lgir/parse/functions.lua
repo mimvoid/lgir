@@ -6,9 +6,10 @@ local helpers = require("lgir.parse.helpers")
 ---@field doc? string
 ---@field return_value { type: string, doc: string? }
 ---@field params lgir.gir_docs.param[]
+---@field out_params lgir.gir_docs.param[]
 
 ---@param param table
----@return lgir.gir_docs.param? info
+---@return lgir.gir_docs.param? info, boolean? out
 local function parse_param(param)
   local result = { type = helpers.get_type(param) }
   if not result.type then
@@ -21,7 +22,9 @@ local function parse_param(param)
   end
 
   result.doc = helpers.get_doc(param)
-  return result
+
+  local out = param._attr.direction == "out"
+  return result, out
 end
 
 ---@param return_value table
@@ -47,6 +50,7 @@ local function parse_function(func)
     doc = helpers.get_doc(func),
     return_value = parse_return_value(return_val),
     params = {},
+    out_params = {},
   }
   if not result.return_value then
     return nil
@@ -54,9 +58,9 @@ local function parse_function(func)
 
   if func.parameters and func.parameters.parameter then
     for i = 1, #func.parameters.parameter do
-      local param = parse_param(func.parameters.parameter[i])
+      local param, out = parse_param(func.parameters.parameter[i])
       if param then
-        table.insert(result.params, param)
+        table.insert(out and result.out_params or result.params, param)
       end
     end
   end
