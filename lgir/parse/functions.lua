@@ -1,13 +1,15 @@
 local helpers = require("lgir.parse.helpers")
 
+---@alias lgir.gir_docs.param { name: string, type: string, doc: string? }
+
 ---@class lgir.gir_docs.func
 ---@field doc? string
 ---@field return_value { type: string, doc: string? }
----@field params { name: string, type: string, doc: string? }[]
+---@field params lgir.gir_docs.param[]
 
 ---@param param table
----@return { name: string, type: string, doc: string? }? info
-local function process_param(param)
+---@return lgir.gir_docs.param? info
+local function parse_param(param)
   local result = { type = helpers.get_type(param) }
   if not result.type then
     return nil
@@ -33,7 +35,7 @@ end
 
 ---@param func table
 ---@return string? name, lgir.gir_docs.func? result
-local function process_function(func)
+local function parse_function(func)
   local name = helpers.get_name(func)
   local return_val = func["return-value"]
 
@@ -52,7 +54,7 @@ local function process_function(func)
 
   if func.parameters and func.parameters.parameter then
     for i = 1, #func.parameters.parameter do
-      local param = process_param(func.parameters.parameter[i])
+      local param = parse_param(func.parameters.parameter[i])
       if param then
         table.insert(result.params, param)
       end
@@ -62,13 +64,13 @@ local function process_function(func)
   return name, result
 end
 
----@param functions table
+---@param functions table[]
 ---@return table<string, lgir.gir_docs.func>
 return function(functions)
   local result = {}
 
   for i = 1, #functions do
-    local name, func = process_function(functions[i])
+    local name, func = parse_function(functions[i])
     if name and func then
       result[name] = func
     end
