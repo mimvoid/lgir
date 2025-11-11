@@ -5,7 +5,8 @@ local helpers = require("lgir.annotate.helpers")
 ---@param class string
 ---@param name string
 ---@param docs lgir.gir_docs.func
-local function write_func(class, name, docs)
+---@param as_method? boolean
+local function write_func(class, name, docs, as_method)
   local lines = { "" }
 
   if docs.doc ~= nil then
@@ -34,7 +35,8 @@ local function write_func(class, name, docs)
     table.insert(lines, helpers.inline_doc(("---@return %s %s"):format(out.type, out.name), out.doc))
   end
 
-  local sig = ("function %s.%s(%s) end"):format(class, name, table.concat(param_names, ", "))
+  local sig_template = as_method and "function %s:%s(%s) end" or "function %s.%s(%s) end"
+  local sig = sig_template:format(class, name, table.concat(param_names, ", "))
   table.insert(lines, sig)
 
   return table.concat(lines, "\n")
@@ -43,12 +45,13 @@ end
 ---@param class string
 ---@param func_docs table<string, lgir.gir_docs.func>
 ---@param functions string[]?
+---@param as_methods? boolean
 ---@return string[]
-return function(class, func_docs, functions)
+return function(class, func_docs, functions, as_methods)
   if functions == nil then
     local result = {}
     for name, docs in pairs(func_docs) do
-      table.insert(result, write_func(class, name, docs))
+      table.insert(result, write_func(class, name, docs, as_methods))
     end
     return result
   end
@@ -56,7 +59,7 @@ return function(class, func_docs, functions)
   return utils.filter_map(functions, function(func_name)
     local docs = func_docs[func_name]
     if docs ~= nil then
-      return write_func(class, func_name, docs)
+      return write_func(class, func_name, docs, as_methods)
     end
   end)
 end

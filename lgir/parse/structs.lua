@@ -10,6 +10,7 @@ local functions = require("lgir.parse.functions")
 ---@field doc string?
 ---@field fields table<string, lgir.gir_docs.field>
 ---@field functions table<string, lgir.gir_docs.func>
+---@field methods table<string, lgir.gir_docs.func>
 
 ---@param record table
 ---@return string? name, lgir.gir_docs.struct? struct
@@ -23,6 +24,7 @@ local function parse_record(record)
     doc = helpers.get_doc(record),
     fields = {},
     functions = record["function"] ~= nil and functions(record["function"]) or {},
+    methods = record.method ~= nil and functions(record.method) or {},
   }
 
   if record.field ~= nil then

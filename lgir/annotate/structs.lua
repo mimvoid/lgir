@@ -31,9 +31,16 @@ return function(structs, docs)
       end
 
       local has_functions = next(doc.functions) ~= nil
-      if has_functions then
+      local has_methods = next(doc.methods) ~= nil
+
+      if has_functions or has_methods then
         table.insert(class_lines, ("local %s = {}\n"):format(name))
-        table.insert(class_lines, table.concat(write_functions(name, doc.functions), "\n"))
+        if has_functions then
+          table.insert(class_lines, table.concat(write_functions(name, doc.functions), "\n"))
+        end
+        if has_methods then
+          table.insert(class_lines, table.concat(write_functions(name, doc.methods, nil, true), "\n"))
+        end
       end
     end
   end
