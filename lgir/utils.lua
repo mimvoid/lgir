@@ -78,6 +78,17 @@ function M.get_nested(tabl, ...)
 end
 
 ---@generic T
+---@param tabl table<T, any>
+---@return T[]
+function M.keys(tabl)
+  local result = {}
+  for k, _ in pairs(tabl) do
+    table.insert(result, k)
+  end
+  return result
+end
+
+---@generic T
 ---@param array T[]
 ---@param func? fun(T): boolean
 ---@return T[]

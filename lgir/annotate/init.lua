@@ -5,6 +5,7 @@ local write_constants = require("lgir.annotate.constants")
 local write_enums = require("lgir.annotate.enums")
 local write_funcs = require("lgir.annotate.functions")
 local write_callbacks = require("lgir.annotate.callbacks")
+local utils = require("lgir.utils")
 
 ---@param file file*
 ---@param typelib table
@@ -70,7 +71,7 @@ return function(gir_docs, filename)
   file:write("\n", "local ", typelib._name, " = {}")
 
   if typelib._function ~= nil and gir_docs.functions ~= nil then
-    local funcs = write_funcs(typelib._name, typelib._function, gir_docs.functions)
+    local funcs = write_funcs(typelib._name, gir_docs.functions, utils.keys(typelib._function))
     file:write("\n", table.concat(funcs, "\n"))
   end
 
