@@ -5,7 +5,6 @@ local helpers = require("lgir.parse.helpers")
 ---@field return_value { type: string, doc: string? }
 ---@field params { name: string, type: string, doc: string? }[]
 
--- FIX: these parameters are not in order
 ---@param param table
 ---@return { name: string, type: string, doc: string? }? info
 local function process_param(param)

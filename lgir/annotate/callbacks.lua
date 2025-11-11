@@ -13,13 +13,13 @@ return function(namespace, callback_docs)
     end
 
     local params = {}
+    for i = 1, #info.params do
+      local param = info.params[i]
+      table.insert(params, ("%s: %s"):format(param.name, param.type))
 
-    for param, param_info in pairs(info.params) do
-      table.insert(params, ("%s: %s"):format(param, param_info.type))
-
-      if param_info.doc ~= nil then
-        local doc = helpers.inline(param_info.doc)
-        table.insert(lines, ("---@param_ %s %s %s"):format(param, param_info.type, doc))
+      if param.doc ~= nil then
+        local doc = helpers.inline(param.doc)
+        table.insert(lines, ("---@param_ %s %s %s"):format(param.name, param.type, doc))
       end
     end
 
