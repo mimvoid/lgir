@@ -5,6 +5,7 @@ local write_constants = require("lgir.annotate.constants")
 local write_enums = require("lgir.annotate.enums")
 local write_funcs = require("lgir.annotate.functions")
 local write_callbacks = require("lgir.annotate.callbacks")
+local write_structs = require("lgir.annotate.structs")
 local utils = require("lgir.utils")
 
 ---@param file file*
@@ -45,6 +46,7 @@ return function(gir_docs, filename)
 
   local enum_classes, enum_fields = write_enums(typelib._enum, gir_docs.enums)
   local bit_classes, bit_fields = write_enums(typelib._bitfield, gir_docs.bitfields)
+  local struct_classes, struct_fields = write_structs(typelib._struct, gir_docs.structs)
 
   if enum_classes ~= nil then
     file:write("\n", table.concat(enum_classes, "\n"))
@@ -54,6 +56,9 @@ return function(gir_docs, filename)
   end
   if gir_docs.callbacks ~= nil then
     file:write("\n", table.concat(write_callbacks(typelib._name, gir_docs.callbacks), "\n"))
+  end
+  if struct_classes ~= nil then
+    file:write("\n", table.concat(struct_classes, "\n"))
   end
 
   file:write("\n\n", "---@class ", typelib._name)
@@ -66,6 +71,9 @@ return function(gir_docs, filename)
   end
   if bit_fields ~= nil then
     file:write("\n", table.concat(bit_fields, "\n"))
+  end
+  if struct_fields ~= nil then
+    file:write("\n", table.concat(struct_fields, "\n"))
   end
 
   file:write("\n", "local ", typelib._name, " = {}")

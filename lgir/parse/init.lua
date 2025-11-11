@@ -1,6 +1,7 @@
 local parse_constants = require("lgir.parse.constants")
 local parse_enums = require("lgir.parse.enums")
 local parse_functions = require("lgir.parse.functions")
+local parse_structs = require("lgir.parse.structs")
 
 ---@class lgir.gir_docs
 ---@field name string
@@ -10,7 +11,7 @@ local parse_functions = require("lgir.parse.functions")
 ---@field bitfields? table<string, lgir.gir_docs.enum>
 ---@field functions? table<string, lgir.gir_docs.func>
 ---@field callbacks? table<string, lgir.gir_docs.func>
----@field structs? table
+---@field structs? table<string, lgir.gir_docs.struct>
 ---@field classes? table
 
 local function err_parse_fail(path)
@@ -51,6 +52,9 @@ return function(gir_table, path)
   end
   if namespace.callback ~= nil then
     result.callbacks = parse_functions(namespace.callback)
+  end
+  if namespace.record ~= nil then
+    result.structs = parse_structs(namespace.record)
   end
 
   return result
