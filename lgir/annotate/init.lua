@@ -50,54 +50,33 @@ return function(gir_docs, filename)
   local iface_classes, iface_fields = structs.list(typelib._interface, gir_docs.interfaces, true)
   local classes, class_fields = structs.list(typelib._class, gir_docs.classes, true)
 
-  if enum_classes ~= nil then
-    file:write("\n", table.concat(enum_classes, "\n"))
+  local function write_sections(...)
+    for _, lines in ipairs({ ... }) do
+      if lines ~= nil then
+        file:write("\n", table.concat(lines, "\n"))
+      end
+    end
   end
-  if bit_classes ~= nil then
-    file:write("\n", table.concat(bit_classes, "\n"))
-  end
+
+  -- Before repository definition
+  -- Basic types, structs, interfaces, and classes
+  write_sections(enum_classes, bit_classes)
   if gir_docs.callbacks ~= nil then
     file:write("\n", table.concat(funcs.callback_list(typelib._name, gir_docs.callbacks), "\n"))
   end
-  if union_classes ~= nil then
-    file:write("\n", table.concat(union_classes, "\n"))
-  end
-  if struct_classes ~= nil then
-    file:write("\n", table.concat(struct_classes, "\n"))
-  end
-  if iface_classes ~= nil then
-    file:write("\n", table.concat(iface_classes, "\n"))
-  end
-  if classes ~= nil then
-    file:write("\n", table.concat(classes, "\n"))
-  end
+  write_sections(union_classes, struct_classes, iface_classes, classes)
 
+  -- Annotate repository and fields
   file:write("\n\n", "---@class ", typelib._name)
 
   if typelib._constant ~= nil then
     file:write("\n", table.concat(constants.list(typelib._constant, gir_docs.constants), "\n"))
   end
-  if enum_fields ~= nil then
-    file:write("\n", table.concat(enum_fields, "\n"))
-  end
-  if bit_fields ~= nil then
-    file:write("\n", table.concat(bit_fields, "\n"))
-  end
-  if union_fields ~= nil then
-    file:write("\n", table.concat(union_fields, "\n"))
-  end
-  if struct_fields ~= nil then
-    file:write("\n", table.concat(struct_fields, "\n"))
-  end
-  if iface_fields ~= nil then
-    file:write("\n", table.concat(iface_fields, "\n"))
-  end
-  if class_fields ~= nil then
-    file:write("\n", table.concat(class_fields, "\n"))
-  end
+  write_sections(enum_fields, bit_fields, union_fields, struct_fields, iface_fields, class_fields)
 
   file:write("\n", "local ", typelib._name, " = {}")
 
+  -- Annotate repository functions
   if typelib._function ~= nil and gir_docs.functions ~= nil then
     local fns = funcs.function_list(typelib._name, gir_docs.functions, utils.keys(typelib._function))
     file:write("\n", table.concat(fns, "\n"))
