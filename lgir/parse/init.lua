@@ -12,7 +12,9 @@ local helpers = require("lgir.parse.helpers")
 ---@field functions? table<string, lgir.gir_docs.func>
 ---@field callbacks? table<string, lgir.gir_docs.func>
 ---@field structs? table<string, lgir.gir_docs.struct>
----@field classes? table
+---@field classes? table<string, lgir.gir_docs.struct>
+---@field interfaces? table<string, lgir.gir_docs.struct>
+---@field unions? table<string, lgir.gir_docs.struct>
 
 local function err_parse_fail(path)
   print("Failed to parse GIR file at " .. path)
@@ -55,6 +57,15 @@ return function(gir_table, path)
   end
   if namespace.record ~= nil then
     result.structs = structs.list(namespace.record)
+  end
+  if namespace.union ~= nil then
+    result.unions = structs.list(namespace.union)
+  end
+  if namespace.interface ~= nil then
+    result.interfaces = structs.list(namespace.interface)
+  end
+  if namespace.class ~= nil then
+    result.classes = structs.list(namespace.class)
   end
 
   return result

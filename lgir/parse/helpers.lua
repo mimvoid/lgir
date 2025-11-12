@@ -76,11 +76,7 @@ end
 ---@return string? type
 function M.get_type(tabl)
   local is_array = tabl.array ~= nil
-  local type_name = utils.get_nested(is_array and tabl.array or tabl, "type", "_attr", "name")
-
-  if type_name == nil then
-    return nil
-  end
+  local type_name = utils.get_nested(is_array and tabl.array or tabl, "type", "_attr", "name") or "unknown"
 
   local type_parts = { gtypes[type_name] or type_name }
   if is_array then
