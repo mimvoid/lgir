@@ -2,6 +2,8 @@ local utils = require("lgir.utils")
 
 local M = {}
 
+---Finds the basename of the given filename, adds a ".gir" suffix if needed, and
+---names the Lua file the annotations would be written to.
 ---@param filename string
 ---@return string gir, string lua
 function M.process_gir_filename(filename)
@@ -17,6 +19,8 @@ function M.process_gir_filename(filename)
   return gir, lua
 end
 
+---Finds the possible directories a GIR file could be installed to.
+---NOTE: this currently isn't very compatible across distros.
 ---@return string[]?
 function M.gir_dirs()
   local datadirs_env = os.getenv("XDG_DATA_DIRS")

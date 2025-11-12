@@ -4,25 +4,26 @@ local handler = require("xmlhandler.tree")
 
 local M = {}
 
----@param gir_filename string
+---Searches through all provided directories for the given file, and returns the first found.
+---This assumes a UNIX-like system with "/" path separators.
+---@param filename string
 ---@param dirs string[]
 ---@return file*? file, string? path
-function M.find_gir_file(gir_filename, dirs)
-  -- TODO: allow searching by packages
-
+function M.find_file(filename, dirs)
   for i = 1, #dirs do
-    local gir_path = ("%s/%s"):format(dirs[i], gir_filename)
-    local file = io.open(gir_path)
+    local path = ("%s/%s"):format(dirs[i], filename)
+    local file = io.open(path)
 
     if file ~= nil then
-      return file, gir_path
+      return file, path
     end
   end
 end
 
+---Reads the GIR file and parses it into a Lua table.
 ---@param gir_file file*
 ---@return table
-function M.parse_gir(gir_file)
+function M.parse_gir_xml(gir_file)
   local contents = gir_file:read("*a")
   gir_file:close()
 

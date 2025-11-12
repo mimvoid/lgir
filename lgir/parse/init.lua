@@ -16,11 +16,13 @@ local helpers = require("lgir.parse.helpers")
 ---@field interfaces? table<string, lgir.gir_docs.struct>
 ---@field unions? table<string, lgir.gir_docs.struct>
 
+---TODO: the program could keep trying to parse different files
 local function err_parse_fail(path)
   print("Failed to parse GIR file at " .. path)
   os.exit(1)
 end
 
+---Tries to parse a raw Lua table generated from GIR XML into organized information.
 ---@param gir_table table
 ---@param path string
 ---@return lgir.gir_docs

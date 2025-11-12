@@ -1,7 +1,9 @@
 local arg, table, os = arg, table, os
 local utils = require("lgir.utils")
 
-local version = "0.1.0"
+local version = "0.1.0" -- TODO: integrate into build system
+
+-- TODO: add more parameters: input-directories, files, etc.
 local help_str = [[
 Usage: lgir [OPTIONS] [GIRS]...
 
@@ -13,6 +15,7 @@ Options:
   --version     Print version
   --help, -h    Print help]]
 
+---Find the value for an argument, which supports the formats `--arg=value` and `--arg value`
 ---@param i integer
 ---@param long_arg string
 ---@param short_arg? string
@@ -48,6 +51,7 @@ local function parse_arg_value(i, long_arg, short_arg)
   return value, skip
 end
 
+---Parse commandline arguments, exits on incorrect inputs.
 ---@return { girs: string[], output: string }
 return function()
   local args = {

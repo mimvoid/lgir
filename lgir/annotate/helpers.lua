@@ -3,12 +3,15 @@ local utils = require("lgir.utils")
 
 local M = {}
 
+---Formats a potentially multiline documentation to ensure it is properly commented.
 ---@param doc string
 ---@return string
 function M.format_doc(doc)
   return "---" .. doc:gsub("\n", "\n---")
 end
 
+---Removes all new line ("\n") characters, trims any leading or trailing whitespace
+---on each line, and joins them into a single line string.
 ---@param str string
 ---@return string
 function M.inline(str)
@@ -16,6 +19,7 @@ function M.inline(str)
   return table.concat(lines, " ")
 end
 
+---Appends an inline documentation, if available, to a type annotation.
 ---@param type_annotation string
 ---@param doc string?
 ---@param with_comment boolean?

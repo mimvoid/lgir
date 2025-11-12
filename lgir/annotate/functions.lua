@@ -4,6 +4,13 @@ local helpers = require("lgir.annotate.helpers")
 
 local M = {}
 
+---Formats a parameter annotation.
+---
+---Note that lgi has out parameters as return values, so this should only be used for
+---in parameters.
+---
+---Callbacks are represented as aliases, but they cannot have ---@param annotations,
+---so an underscore is added.
 ---@param param lgir.gir_docs.param
 ---@param for_callback? boolean
 ---@return string
@@ -12,6 +19,8 @@ function M.param(param, for_callback)
   return helpers.inline_doc(template:format(param.name, param.type), param.doc)
 end
 
+---Makes a list of parameter names and parameter annotations. The former can be used to write the
+---parameters in the function signature.
 ---@param params lgir.gir_docs.param[]
 ---@param for_callback boolean?
 ---@return string[] param_names, string[] param_lines
@@ -28,12 +37,14 @@ function M.param_list(params, for_callback)
   return names, lines
 end
 
+---Formats the return value.
 ---@param value { type: string, doc: string? }
 ---@return string
 function M.return_value(value)
   return helpers.inline_doc("---@return " .. value.type, value.doc, true)
 end
 
+---Creates return annotations for out parameters.
 ---@param params lgir.gir_docs.param[]
 ---@return string[] lines
 function M.out_params(params)
@@ -42,10 +53,12 @@ function M.out_params(params)
   end)
 end
 
+---Annotates a given function, which can be a method.
 ---@param class string
 ---@param name string
 ---@param docs lgir.gir_docs.func
 ---@param as_method? boolean
+---@return string
 function M.func(class, name, docs, as_method)
   local lines = { "" }
   if docs.doc ~= nil then
@@ -69,6 +82,7 @@ function M.func(class, name, docs, as_method)
   return table.concat(lines, "\n")
 end
 
+---Writes a list of functions.
 ---@param class string
 ---@param func_docs table<string, lgir.gir_docs.func>
 ---@param functions string[]?
@@ -91,6 +105,7 @@ function M.function_list(class, func_docs, functions, as_methods)
   end)
 end
 
+---Annotates a callback.
 ---@param namespace string
 ---@param name string
 ---@param docs lgir.gir_docs.func
@@ -119,6 +134,7 @@ function M.callback(namespace, name, docs)
   return lines
 end
 
+---Writes a list of callbacks.
 ---@param namespace string
 ---@param callbacks table<string, lgir.gir_docs.func>
 ---@return string[]

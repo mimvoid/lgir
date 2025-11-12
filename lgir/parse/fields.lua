@@ -7,6 +7,7 @@ local helpers = require("lgir.parse.helpers")
 
 local M = {}
 
+---Tries to parse a field from a table, returning values if successful.
 ---@param field table
 ---@return string? name, lgir.gir_docs.field? field
 function M.field(field)
@@ -26,6 +27,7 @@ function M.field(field)
   end
 end
 
+---Searches through an array and returns any successfully parsed fields.
 ---@param fields table[]
 ---@return table<string, lgir.gir_docs.field>
 function M.list(fields)

@@ -3,6 +3,8 @@ local helpers = require("lgir.annotate.helpers")
 
 local M = {}
 
+---lgi accepts enums (and bitfields) as both strings and numbers. This implementation
+---accounts for that by creating a class for the enum keys and the enum as a whole.
 ---@param info table
 ---@param docs lgir.gir_docs.enum?
 ---@return string?
@@ -26,6 +28,8 @@ function M.alias(info, docs)
   return table.concat(lines, "\n")
 end
 
+---Creates a list of field annotations for enums. These should be top-level fields
+---in the GI repository class.
 ---@param field_name string
 ---@param type_name string
 ---@return string
@@ -33,6 +37,8 @@ function M.field(field_name, type_name)
   return ("---@field %s table<%sKeys, integer>"):format(field_name, type_name)
 end
 
+---Writes type annotations for enums (or bitfields) and field annotations for the
+---top-level repository class.
 ---@param enums table
 ---@param gir_enum_docs table<string, lgir.gir_docs.enum>
 ---@return string[]? aliases, string[]? fields

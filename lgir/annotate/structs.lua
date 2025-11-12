@@ -4,6 +4,7 @@ local funcs = require("lgir.annotate.functions")
 
 local M = {}
 
+---Formats a field of a struct.
 ---@param name string
 ---@param value any
 ---@param doc string?
@@ -12,6 +13,7 @@ function M.field(name, value, doc)
   return helpers.inline_doc(("---@field %s %s"):format(name, type(value)), doc)
 end
 
+---Annotates a struct, including its fields, methods, and functions.
 ---@param name string
 ---@param struct table
 ---@param doc lgir.gir_docs.struct?
@@ -54,6 +56,8 @@ function M.struct(name, struct, doc, inherits)
   return repo_field, lines
 end
 
+---Find the parent class and interface implementations, if available.
+---This is mainly meant for classes and interfaces.
 function M.find_inherits(gi_data)
   local result = {}
 
@@ -69,6 +73,7 @@ function M.find_inherits(gi_data)
   return result
 end
 
+---Writes a list of structs (which can also be classes, unions, or interfaces).
 ---@param structs table<string, table>
 ---@param docs table<string, lgir.gir_docs.struct>
 ---@param check_inherits boolean?

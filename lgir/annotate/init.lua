@@ -30,6 +30,7 @@ local function write_header(file, typelib)
   end
 end
 
+---Writes annotations to a file.
 ---@param gir_docs lgir.gir_docs
 ---@param filename string
 ---@return nil

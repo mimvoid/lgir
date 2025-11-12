@@ -13,6 +13,8 @@ local helpers = require("lgir.parse.helpers")
 
 local M = {}
 
+---Parses a parameter.
+---TODO: the type may not be available in some cases
 ---@param param table
 ---@return lgir.gir_docs.param? info, boolean? out
 function M.param(param)
@@ -32,6 +34,7 @@ function M.param(param)
   return result, out
 end
 
+---Parses the return value of a callable.
 ---@param return_value table
 ---@return { type: string, doc: string? }?
 function M.return_value(return_value)
@@ -41,6 +44,9 @@ function M.return_value(return_value)
   end
 end
 
+---Parses a function.
+---TODO: We can probably also find some of this information with lgi's callable type,
+---but I'm not sure if that will be worth the complexity.
 ---@param func table
 ---@return string? name, lgir.gir_docs.func? result
 function M.func(func)
@@ -73,6 +79,7 @@ function M.func(func)
   return name, result
 end
 
+---Searches through an array and returns any successfully parsed functions.
 ---@param functions table[]
 ---@return table<string, lgir.gir_docs.func>
 function M.list(functions)

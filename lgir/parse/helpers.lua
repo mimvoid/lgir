@@ -28,12 +28,17 @@ local keywords = utils.set({
   "until",
 })
 
+---Checks if the given string is a reserved Lua keyword, meaning it cannot be used as an indentifier
+---for variables, function parameters, etc.
+---
+---If it is, prepends an underscore to fix the conflict. Otherwise, returns the string as-is.
 ---@param name string
 ---@return string
 function M.fix_keyword(name)
   return keywords[name] == nil and name or "_" .. name
 end
 
+---Searches for the name attribute and fixes any conflicts with Lua keywords.
 ---@param tabl table
 ---@return string? name
 function M.get_name(tabl)
@@ -43,20 +48,21 @@ function M.get_name(tabl)
   end
 end
 
+---Searches for the documentation text.
 ---@param tabl table
 ---@return string? doc
 function M.get_doc(tabl)
   return utils.get_nested(tabl, "doc", 1)
 end
 
----Get the name and documentation at once
+---Get the name and documentation at once.
 ---@param tabl table
 ---@return string? name, string? doc
 function M.get_name_doc(tabl)
   return M.get_name(tabl), M.get_doc(tabl)
 end
 
----Maps an array and returns all items' names as keys and documentation as values
+---Maps an array and returns all items' names as keys and documentation as values.
 ---@param list table[]
 ---@return table<string, string>
 function M.filter_map_name_doc(list)
@@ -72,6 +78,7 @@ function M.filter_map_name_doc(list)
   return result
 end
 
+---Parses the type from GIR and formats it into a Lua-friendly type.
 ---@param tabl table
 ---@return string? type
 function M.get_type(tabl)

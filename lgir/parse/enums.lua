@@ -1,11 +1,15 @@
 local helpers = require("lgir.parse.helpers")
 
+---Information lgir stores for an enum, independent of lgi's introspection.
+---This is mainly documentation strings since enums are simple and most information is
+---findable with lgi.
 ---@class lgir.gir_docs.enum
 ---@field doc string?
 ---@field members table<string, string>
 
 local M = {}
 
+---Parses enum information from a table, returning values if the input is well-formed.
 ---@param enum table
 ---@return string? name, lgir.gir_docs.enum?
 function M.enum(enum)
@@ -29,7 +33,8 @@ function M.enum(enum)
   return name, docs
 end
 
----@param enums table
+---Searches through an array and returns any successfully parsed enums.
+---@param enums table[]
 ---@return table<string, lgir.gir_docs.enum>
 function M.list(enums)
   local result = {}
