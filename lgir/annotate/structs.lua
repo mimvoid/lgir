@@ -15,13 +15,14 @@ return function(structs, docs)
 
   for name, struct in pairs(structs) do
     if name ~= "_namespace" then
-      table.insert(class_lines, "\n---@class " .. struct._name)
-      table.insert(module_field_lines, ("---@field %s %s"):format(name, struct._name))
-
       local doc = docs[name]
       if doc and doc.doc then
+        table.insert(class_lines, "") -- new line
         table.insert(class_lines, helpers.format_doc(doc.doc))
       end
+
+      table.insert(class_lines, "---@class " .. struct._name)
+      table.insert(module_field_lines, ("---@field %s %s"):format(name, struct._name))
 
       if struct._field ~= nil then
         for field, value in pairs(struct._field) do
