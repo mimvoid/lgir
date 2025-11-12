@@ -1,4 +1,4 @@
-local table = table
+local table, pairs = table, pairs
 local utils = require("lgir.utils")
 local helpers = require("lgir.annotate.helpers")
 

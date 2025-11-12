@@ -1,4 +1,4 @@
-local string, table = string, table
+local string, table, ipairs, pairs = string, table, ipairs, pairs
 local lgi = require("lgi")
 
 local constants = require("lgir.annotate.constants")

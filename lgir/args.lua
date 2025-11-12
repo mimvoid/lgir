@@ -1,4 +1,4 @@
-local arg = arg
+local arg, table, os = arg, table, os
 local utils = require("lgir.utils")
 
 local version = "0.1.0"

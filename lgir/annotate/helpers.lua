@@ -1,3 +1,4 @@
+local table = table
 local utils = require("lgir.utils")
 
 local M = {}

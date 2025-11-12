@@ -1,3 +1,4 @@
+local pairs, type = pairs, type
 local helpers = require("lgir.annotate.helpers")
 
 local M = {}

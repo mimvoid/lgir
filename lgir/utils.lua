@@ -1,4 +1,4 @@
-local table = table
+local table, ipairs, pairs = table, ipairs, pairs
 local M = {}
 
 ---Split a string by a separator
