@@ -1,11 +1,10 @@
 local string, table = string, table
 local lgi = require("lgi")
 
-local write_constants = require("lgir.annotate.constants")
-local write_enums = require("lgir.annotate.enums")
-local write_funcs = require("lgir.annotate.functions")
-local write_callbacks = require("lgir.annotate.callbacks")
-local write_structs = require("lgir.annotate.structs")
+local constants = require("lgir.annotate.constants")
+local enums = require("lgir.annotate.enums")
+local funcs = require("lgir.annotate.functions")
+local structs = require("lgir.annotate.structs")
 local utils = require("lgir.utils")
 
 ---@param file file*
@@ -44,9 +43,9 @@ return function(gir_docs, filename)
 
   write_header(file, typelib)
 
-  local enum_classes, enum_fields = write_enums(typelib._enum, gir_docs.enums)
-  local bit_classes, bit_fields = write_enums(typelib._bitfield, gir_docs.bitfields)
-  local struct_classes, struct_fields = write_structs(typelib._struct, gir_docs.structs)
+  local enum_classes, enum_fields = enums.list(typelib._enum, gir_docs.enums)
+  local bit_classes, bit_fields = enums.list(typelib._bitfield, gir_docs.bitfields)
+  local struct_classes, struct_fields = structs.list(typelib._struct, gir_docs.structs)
 
   if enum_classes ~= nil then
     file:write("\n", table.concat(enum_classes, "\n"))
@@ -55,7 +54,7 @@ return function(gir_docs, filename)
     file:write("\n", table.concat(bit_classes, "\n"))
   end
   if gir_docs.callbacks ~= nil then
-    file:write("\n", table.concat(write_callbacks(typelib._name, gir_docs.callbacks), "\n"))
+    file:write("\n", table.concat(funcs.callback_list(typelib._name, gir_docs.callbacks), "\n"))
   end
   if struct_classes ~= nil then
     file:write("\n", table.concat(struct_classes, "\n"))
@@ -64,7 +63,7 @@ return function(gir_docs, filename)
   file:write("\n\n", "---@class ", typelib._name)
 
   if typelib._constant ~= nil then
-    file:write("\n", table.concat(write_constants(typelib._constant, gir_docs.constants), "\n"))
+    file:write("\n", table.concat(constants.list(typelib._constant, gir_docs.constants), "\n"))
   end
   if enum_fields ~= nil then
     file:write("\n", table.concat(enum_fields, "\n"))
@@ -79,8 +78,8 @@ return function(gir_docs, filename)
   file:write("\n", "local ", typelib._name, " = {}")
 
   if typelib._function ~= nil and gir_docs.functions ~= nil then
-    local funcs = write_funcs(typelib._name, gir_docs.functions, utils.keys(typelib._function))
-    file:write("\n", table.concat(funcs, "\n"))
+    local fns = funcs.function_list(typelib._name, gir_docs.functions, utils.keys(typelib._function))
+    file:write("\n", table.concat(fns, "\n"))
   end
 
   file:close()

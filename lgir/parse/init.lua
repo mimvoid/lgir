@@ -1,7 +1,7 @@
-local parse_constants = require("lgir.parse.constants")
-local parse_enums = require("lgir.parse.enums")
-local parse_functions = require("lgir.parse.functions")
-local parse_structs = require("lgir.parse.structs")
+local enums = require("lgir.parse.enums")
+local funcs = require("lgir.parse.functions")
+local structs = require("lgir.parse.structs")
+local helpers = require("lgir.parse.helpers")
 
 ---@class lgir.gir_docs
 ---@field name string
@@ -39,22 +39,22 @@ return function(gir_table, path)
   end
 
   if namespace.constant ~= nil then
-    result.constants = parse_constants(namespace.constant)
+    result.constants = helpers.filter_map_name_doc(namespace.constant)
   end
   if namespace.enumeration ~= nil then
-    result.enums = parse_enums(namespace.enumeration)
+    result.enums = enums.list(namespace.enumeration)
   end
   if namespace.bitfield ~= nil then
-    result.bitfields = parse_enums(namespace.bitfield)
+    result.bitfields = enums.list(namespace.bitfield)
   end
   if namespace["function"] ~= nil then
-    result.functions = parse_functions(namespace["function"])
+    result.functions = funcs.list(namespace["function"])
   end
   if namespace.callback ~= nil then
-    result.callbacks = parse_functions(namespace.callback)
+    result.callbacks = funcs.list(namespace.callback)
   end
   if namespace.record ~= nil then
-    result.structs = parse_structs(namespace.record)
+    result.structs = structs.list(namespace.record)
   end
 
   return result

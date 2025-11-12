@@ -17,11 +17,19 @@ end
 
 ---@param type_annotation string
 ---@param doc string?
-function M.inline_doc(type_annotation, doc)
-  if doc == nil then
-    return type_annotation
+---@param with_comment boolean?
+---@return string
+function M.inline_doc(type_annotation, doc, with_comment)
+  local result = {type_annotation}
+
+  if doc ~= nil then
+    if with_comment then
+      result[2] = "#"
+    end
+    table.insert(result, M.inline(doc))
   end
-  return ("%s %s"):format(type_annotation, M.inline(doc))
+
+  return table.concat(result, " ")
 end
 
 return M

@@ -1,12 +1,13 @@
-local string, table = string, table
+local table = table
 local helpers = require("lgir.annotate.helpers")
+
+local M = {}
 
 ---@param info table
 ---@param docs lgir.gir_docs.enum?
 ---@return string?
-local function alias_enum(info, docs)
+function M.alias(info, docs)
   local lines = { "" }
-
   if docs and docs.doc then
     table.insert(lines, helpers.format_doc(docs.doc))
   end
@@ -15,12 +16,8 @@ local function alias_enum(info, docs)
 
   for member, _ in pairs(info) do
     if member:sub(1, 1) ~= "_" then
-      local member_doc = ([[---| '"%s"']]):format(member)
-
-      if docs and docs.members[member] ~= nil then
-        member_doc = ("%s # %s"):format(member_doc, docs.members[member]:gsub("\n", ""))
-      end
-
+      local name = ([[---| '"%s"']]):format(member)
+      local member_doc = docs ~= nil and helpers.inline_doc(name, docs.members[member], true) or name
       table.insert(lines, member_doc)
     end
   end
@@ -29,12 +26,19 @@ local function alias_enum(info, docs)
   return table.concat(lines, "\n")
 end
 
+---@param field_name string
+---@param type_name string
+---@return string
+function M.field(field_name, type_name)
+  return ("---@field %s table<%sKeys, integer>"):format(field_name, type_name)
+end
+
 ---@param enums table
 ---@param gir_enum_docs table<string, lgir.gir_docs.enum>
 ---@return string[]? aliases, string[]? fields
-return function(enums, gir_enum_docs)
+function M.list(enums, gir_enum_docs)
   if enums == nil or gir_enum_docs == nil then
-    return nil, nil
+    return nil
   end
 
   local alias_lines = {}
@@ -42,10 +46,12 @@ return function(enums, gir_enum_docs)
 
   for name, data in pairs(enums) do
     if name:sub(1, 1) ~= "_" then
-      table.insert(alias_lines, alias_enum(data, gir_enum_docs[name]))
-      table.insert(field_lines, ("---@field %s table<%sKeys, integer>"):format(name, data._name))
+      table.insert(alias_lines, M.alias(data, gir_enum_docs[name]))
+      table.insert(field_lines, M.field(name, data._name))
     end
   end
 
   return alias_lines, field_lines
 end
+
+return M

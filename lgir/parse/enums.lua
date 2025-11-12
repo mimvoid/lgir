@@ -4,31 +4,44 @@ local helpers = require("lgir.parse.helpers")
 ---@field doc string?
 ---@field members table<string, string>
 
+local M = {}
+
+---@param enum table
+---@return string? name, lgir.gir_docs.enum?
+function M.enum(enum)
+  local name = helpers.get_name(enum)
+  if name == nil then
+    return nil
+  end
+
+  local docs = {
+    doc = helpers.get_doc(enum),
+    members = {}
+  }
+
+  for i = 1, #enum.member do
+    local member_name, member_doc = helpers.get_name_doc(enum.member[i])
+    if member_name then
+      docs.members[member_name:upper()] = member_doc
+    end
+  end
+
+  return name, docs
+end
+
 ---@param enums table
 ---@return table<string, lgir.gir_docs.enum>
-return function(enums)
+function M.list(enums)
   local result = {}
 
   for i = 1, #enums do
-    local enum = enums[i]
-    local name = helpers.get_name(enum)
-    if name ~= nil then
-      local enum_docs = {
-        doc = helpers.get_doc(enum),
-        members = {}
-      }
-
-      for j = 1, #enum.member do
-        local member = enum.member[j]
-        local member_name = helpers.get_name(member)
-        if member_name then
-          enum_docs.members[member_name:upper()] = helpers.get_doc(member)
-        end
-      end
-
-      result[name] = enum_docs
+    local name, enum = M.enum(enums[i])
+    if name and enum then
+      result[name] = enum
     end
   end
 
   return result
 end
+
+return M

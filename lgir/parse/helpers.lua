@@ -49,6 +49,29 @@ function M.get_doc(tabl)
   return utils.get_nested(tabl, "doc", 1)
 end
 
+---Get the name and documentation at once
+---@param tabl table
+---@return string? name, string? doc
+function M.get_name_doc(tabl)
+  return M.get_name(tabl), M.get_doc(tabl)
+end
+
+---Maps an array and returns all items' names as keys and documentation as values
+---@param list table[]
+---@return table<string, string>
+function M.filter_map_name_doc(list)
+  local result = {}
+
+  for i = 1, #list do
+    local name, doc = M.get_name_doc(list[i])
+    if name and doc then
+      result[name] = doc
+    end
+  end
+
+  return result
+end
+
 ---@param tabl table
 ---@return string? type
 function M.get_type(tabl)

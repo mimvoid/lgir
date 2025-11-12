@@ -1,10 +1,6 @@
 local helpers = require("lgir.parse.helpers")
-local functions = require("lgir.parse.functions")
-
----@class lgir.gir_docs.field
----@field doc string?
----@field writable boolean
----@field type string
+local funcs = require("lgir.parse.functions")
+local fields = require("lgir.parse.fields")
 
 ---@class lgir.gir_docs.struct
 ---@field doc string?
@@ -12,9 +8,11 @@ local functions = require("lgir.parse.functions")
 ---@field functions table<string, lgir.gir_docs.func>
 ---@field methods table<string, lgir.gir_docs.func>
 
+local M = {}
+
 ---@param record table
 ---@return string? name, lgir.gir_docs.struct? struct
-local function parse_record(record)
+function M.struct(record)
   local name = helpers.get_name(record)
   if name == nil then
     return nil
@@ -22,24 +20,10 @@ local function parse_record(record)
 
   local result = {
     doc = helpers.get_doc(record),
-    fields = {},
-    functions = record["function"] ~= nil and functions(record["function"]) or {},
-    methods = record.method ~= nil and functions(record.method) or {},
+    fields = record.field ~= nil and fields.list(record.field) or {},
+    functions = record["function"] ~= nil and funcs.list(record["function"]) or {},
+    methods = record.method ~= nil and funcs.list(record.method) or {},
   }
-
-  if record.field ~= nil then
-    for i = 1, #record.field do
-      local field = record.field[i]
-      local field_docs = {
-        doc = helpers.get_doc(field),
-        writable = field._attr and field._attr.writable == "1",
-        type = helpers.get_type(field),
-      }
-      if field_docs.type ~= nil then
-        table.insert(result.fields, field_docs)
-      end
-    end
-  end
 
   return name, result
 end
@@ -47,17 +31,17 @@ end
 ---Note: GIR files seem to call structs records
 ---@param records table
 ---@return table<string, lgir.gir_docs.struct>
-return function(records)
+function M.list(records)
   local result = {}
 
   for i = 1, #records do
-    if records[i] ~= nil then
-      local name, record = parse_record(records[i])
-      if name and record then
-        result[name] = record
-      end
+    local name, record = M.struct(records[i])
+    if name and record then
+      result[name] = record
     end
   end
 
   return result
 end
+
+return M
