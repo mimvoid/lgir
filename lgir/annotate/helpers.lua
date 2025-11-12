@@ -15,7 +15,7 @@ end
 ---@param str string
 ---@return string
 function M.inline(str)
-  local lines = utils.map(utils.split(str, "\n"), utils.strip)
+  local lines = utils.collect(utils.map(utils.split(str, "\n"), utils.strip))
   return table.concat(lines, " ")
 end
 

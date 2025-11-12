@@ -1,4 +1,4 @@
-local table, ipairs, pairs = table, ipairs, pairs
+local table, next, select = table, next, select
 local M = {}
 
 ---Split a string by a separator
@@ -64,6 +64,36 @@ function M.remove_suffix(str, suffix)
   end
 end
 
+---Recurses through a table with the given keys.
+---@param tabl table
+---@param ... string|integer Nested table keys
+---@return any? # The nested value, or nil if not found
+function M.get_nested(tabl, ...)
+  for i = 1, select("#", ...) do
+    local key = select(i, ...)
+    if type(tabl) ~= "table" or tabl[key] == nil then
+      return nil
+    end
+    tabl = tabl[key]
+  end
+
+  return tabl
+end
+
+---Iterates only the keys of the given table.
+---@generic K
+---@param tabl table<K, any>
+---@return fun(t: table<K, any>, index: K): K?
+---@return table<K, any>, K?
+function M.keys(tabl)
+  local function iter(t, index)
+    local k, _ = next(t, index)
+    return k
+  end
+
+  return iter, tabl, nil
+end
+
 ---Creates a table with keys from an array of strings.
 ---@param list string[]
 ---@return table<string, boolean>
@@ -75,85 +105,77 @@ function M.set(list)
   return result
 end
 
----Recurses through a table with the given keys.
----@param tabl table
----@param ... string|integer Nested table keys
----@return any? # The nested value, or nil if not found
-function M.get_nested(tabl, ...)
-  for _, key in ipairs({ ... }) do
-    if type(tabl) ~= "table" or tabl[key] == nil then
-      return nil
-    end
-
-    tabl = tabl[key]
-  end
-
-  return tabl
-end
-
----Creates an array of all keys in the given table.
----@generic T
----@param tabl table<T, any>
----@return T[]
-function M.keys(tabl)
+---Resolves an iterator into a table.
+---@generic K, V, E
+---@param iter fun(t: table<K, V>, index: K): K?, E?
+---@param tabl table<K, V>
+---@param index K?
+---@return table<K, E>
+function M.collect(iter, tabl, index)
   local result = {}
-  for k, _ in pairs(tabl) do
-    table.insert(result, k)
+  for k, v in iter, tabl, index do
+    if type(k) == "integer" then
+      table.insert(result, v)
+    else
+      result[k] = v
+    end
   end
   return result
 end
 
----Goes through an array and retains only the values that satisfy the given predicate.
+---Iterates a table and retains only the values that satisfy the given predicate.
 ---By default, it removes existing nil or false items.
----@generic T
----@param array T[]
----@param func? fun(T): boolean
----@return T[]
-function M.filter(array, func)
-  local result = {}
+---@generic K, V
+---@param tabl table<K, V>
+---@param predicate? fun(V): boolean
+---@return fun(t: table<K, V>, index: K): K?, V?
+---@return table<K, V>, K?
+function M.filter(tabl, predicate)
+  local function iter(t, index)
+    local k, v = next(t, index)
+    while k and not ((predicate == nil and v) or (predicate ~= nil and predicate(v))) do
+      k, v = next(t, k)
+    end
+    return k, v
+  end
 
-  for i = 1, #array do
-    local item = array[i]
+  return iter, tabl, nil
+end
 
-    -- Filter nil or false items by default, otherwise, call the function
-    if (func == nil and item) or (func ~= nil and func(item)) then
-      table.insert(result, item)
+---Iterates a table and performs a function on every value of the table.
+---@generic K, V, E
+---@param tabl table<K, V>
+---@param fn fun(V): E
+---@return fun(t: table<K, V>, index: K): K?, E?
+---@return table<K, V>, K?
+function M.map(tabl, fn)
+  local function iter(t, index)
+    local k, v = next(t, index)
+    if v then
+      return k, fn(v)
     end
   end
 
-  return result
+  return iter, tabl, nil
 end
 
----Performs a function on every element of an array, and returns an array with the
----resulting values.
----@generic T, E
----@param array T[]
----@param func fun(T): E
----@return E[]
-function M.map(array, func)
-  local result = {}
-  for i, v in ipairs(array) do
-    result[i] = func(v)
-  end
-  return result
-end
-
----Performs a map operation on the table and filters out any nil or false results.
----@generic T, E
----@param array T[]
----@param func fun(T): E?
----@return E[]
-function M.filter_map(array, func)
-  local result = {}
-
-  for i = 1, #array do
-    local mapped_item = func(array[i])
-    if mapped_item then
-      table.insert(result, mapped_item)
+---Iterates a table, performs a map operation, and filters out any nil or false results.
+---@generic K, V, E
+---@param tabl table<K, V>
+---@param fn fun(V): E?
+---@return fun(t: table<K, V>, index: K): K?, E?
+---@return table<K, V>, K?
+function M.filter_map(tabl, fn)
+  local map = M.map(tabl, fn)
+  local function iter(t, index)
+    local k, v = map(t, index)
+    while k and not v do
+      k, v = map(t, k)
     end
+    return k, v
   end
 
-  return result
+  return iter, tabl, nil
 end
 
 return M

@@ -48,9 +48,9 @@ end
 ---@param params lgir.gir_docs.param[]
 ---@return string[] lines
 function M.out_params(params)
-  return utils.map(params, function(out)
+  return utils.collect(utils.map(params, function(out)
     return helpers.inline_doc(("---@return %s %s"):format(out.type, out.name), out.doc)
-  end)
+  end))
 end
 
 ---Annotates a given function, which can be a method.
@@ -97,12 +97,12 @@ function M.function_list(class, func_docs, functions, as_methods)
     return result
   end
 
-  return utils.filter_map(functions, function(func_name)
+  return utils.collect(utils.filter_map(functions, function(func_name)
     local docs = func_docs[func_name]
     if docs ~= nil then
       return M.func(class, func_name, docs, as_methods)
     end
-  end)
+  end))
 end
 
 ---Annotates a callback.

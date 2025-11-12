@@ -29,9 +29,9 @@ function M.gir_dirs()
   end
 
   local datadirs = utils.split(datadirs_env, ":")
-  return utils.map(datadirs, function(dir)
+  return utils.collect(utils.map(datadirs, function(dir)
     return dir .. "/gir-1.0"
-  end)
+  end))
 end
 
 return M

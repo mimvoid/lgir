@@ -1,4 +1,4 @@
-local string, table, ipairs, pairs = string, table, ipairs, pairs
+local table, select, pairs = table, select, pairs
 local lgi = require("lgi")
 
 local constants = require("lgir.annotate.constants")
@@ -18,7 +18,7 @@ local function write_header(file, typelib)
 -- Name: %s
 -- Version: %s]]
 
-  file:write(string.format(template, typelib._name, typelib._version))
+  file:write(template:format(typelib._name, typelib._version))
 
   if typelib._dependencies ~= nil then
     local deps = {}
@@ -52,7 +52,8 @@ return function(gir_docs, filename)
   local classes, class_fields = structs.list(typelib._class, gir_docs.classes, true)
 
   local function write_sections(...)
-    for _, lines in ipairs({ ... }) do
+    for i = 1, select("#", ...) do
+      local lines = select(i, ...)
       if lines ~= nil then
         file:write("\n", table.concat(lines, "\n"))
       end
@@ -79,7 +80,7 @@ return function(gir_docs, filename)
 
   -- Annotate repository functions
   if typelib._function ~= nil and gir_docs.functions ~= nil then
-    local fns = funcs.function_list(typelib._name, gir_docs.functions, utils.keys(typelib._function))
+    local fns = funcs.function_list(typelib._name, gir_docs.functions, utils.collect(utils.keys(typelib._function)))
     file:write("\n", table.concat(fns, "\n"))
   end
 
