@@ -16,7 +16,7 @@ local M = {}
 ---@return string
 function M.param(param, for_callback)
   local template = for_callback and "---@param_ %s %s" or "---@param %s %s"
-  return helpers.inline_doc(template:format(param.name, param.type), param.doc)
+  return helpers.inline_doc(template:format(param.name, param.type), param.doc, true)
 end
 
 ---Makes a list of parameter names and parameter annotations. The former can be used to write the
@@ -41,7 +41,7 @@ end
 ---@param value { type: string, doc: string? }
 ---@return string
 function M.return_value(value)
-  return helpers.inline_doc("---@return " .. value.type, value.doc, true)
+  return helpers.inline_doc("---@return " .. value.type, value.doc, true, true)
 end
 
 ---Creates return annotations for out parameters.
@@ -49,7 +49,7 @@ end
 ---@return string[] lines
 function M.out_params(params)
   return utils.collect(utils.map(params, function(out)
-    return helpers.inline_doc(("---@return %s %s"):format(out.type, out.name), out.doc)
+    return helpers.inline_doc(("---@return %s %s"):format(out.type, out.name), out.doc, true)
   end))
 end
 

@@ -10,7 +10,7 @@ local M = {}
 ---@param doc string?
 ---@return string
 function M.field(name, value, doc)
-  return helpers.inline_doc(("---@field %s %s"):format(name, type(value)), doc)
+  return helpers.inline_doc(("---@field %s %s"):format(name, type(value)), doc, true)
 end
 
 ---Annotates a struct, including its fields, methods, and functions.

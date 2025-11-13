@@ -19,7 +19,7 @@ function M.alias(info, docs)
   for member, _ in pairs(info) do
     if member:sub(1, 1) ~= "_" then
       local name = ([[---| '"%s"']]):format(member)
-      local member_doc = docs ~= nil and helpers.inline_doc(name, docs.members[member], true) or name
+      local member_doc = docs ~= nil and helpers.inline_doc(name, docs.members[member], true, true) or name
       table.insert(lines, member_doc)
     end
   end
