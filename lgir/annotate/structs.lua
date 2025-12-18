@@ -24,7 +24,7 @@ function M.struct(name, struct, doc, inherits)
 
   local lines = {""}
   if doc and doc.doc then
-    table.insert(lines, helpers.format_doc(doc.doc))
+    table.insert(lines, helpers.doccomment(doc.doc))
   end
 
   if inherits ~= nil and #inherits ~= 0 then
@@ -74,29 +74,28 @@ function M.find_inherits(gi_data)
 end
 
 ---Writes a list of structs (which can also be classes, unions, or interfaces).
----@param structs table<string, table>
----@param docs table<string, lgir.gir_docs.struct>
+---@param structs table<string, table>?
+---@param docs table<string, lgir.gir_docs.struct>?
 ---@param check_inherits boolean?
----@return string[]? classes, string[]? repo_fields
+---@return lgir.annotations
 function M.list(structs, docs, check_inherits)
   if structs == nil or docs == nil then
-    return nil
+    return {}
   end
 
-  local class_lines = {}
-  local repo_field_lines = {}
+  local result = { classes = {}, fields = {} }
 
   for name, struct in pairs(structs) do
     if name ~= "_namespace" and struct._name ~= nil then
       local inherits = check_inherits and M.find_inherits(struct) or nil
 
       local field, class = M.struct(name, struct, docs[name], inherits)
-      table.insert(class_lines, table.concat(class, "\n"))
-      table.insert(repo_field_lines, field)
+      table.insert(result.classes, table.concat(class, "\n"))
+      table.insert(result.fields, field)
     end
   end
 
-  return class_lines, repo_field_lines
+  return result
 end
 
 return M

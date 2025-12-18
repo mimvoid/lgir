@@ -9,7 +9,7 @@ local M = {}
 ---@param filename string
 ---@param dirs string[]
 ---@return file*? file, string? path
-function M.find_file(filename, dirs)
+function M.find_file_in_dirs(filename, dirs)
   for i = 1, #dirs do
     local path = ("%s/%s"):format(dirs[i], filename)
     local file = io.open(path)
@@ -23,10 +23,8 @@ end
 ---Reads the GIR file and parses it into a Lua table.
 ---@param gir_file file*
 ---@return table
-function M.parse_gir_xml(gir_file)
+function M.parse_gir_file(gir_file)
   local contents = gir_file:read("*a")
-  gir_file:close()
-
   local gir_handler = handler:new()
 
   -- Don't reduce children vectors of these tags, even with one child

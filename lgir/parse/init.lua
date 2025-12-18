@@ -42,31 +42,32 @@ return function(gir_table, path)
     err_parse_fail(path)
   end
 
-  if namespace.constant ~= nil then
+  if namespace.constant then
     result.constants = helpers.filter_map_name_doc(namespace.constant)
+    result.constants._namespace = nil -- Don't save lgi's recursed namespace table
   end
-  if namespace.enumeration ~= nil then
+  if namespace.enumeration then
     result.enums = enums.list(namespace.enumeration)
   end
-  if namespace.bitfield ~= nil then
+  if namespace.bitfield then
     result.bitfields = enums.list(namespace.bitfield)
   end
-  if namespace["function"] ~= nil then
+  if namespace["function"] then
     result.functions = funcs.list(namespace["function"])
   end
-  if namespace.callback ~= nil then
+  if namespace.callback then
     result.callbacks = funcs.list(namespace.callback)
   end
-  if namespace.record ~= nil then
+  if namespace.record then
     result.structs = structs.list(namespace.record)
   end
-  if namespace.union ~= nil then
+  if namespace.union then
     result.unions = structs.list(namespace.union)
   end
-  if namespace.interface ~= nil then
+  if namespace.interface then
     result.interfaces = structs.list(namespace.interface)
   end
-  if namespace.class ~= nil then
+  if namespace.class then
     result.classes = structs.list(namespace.class)
   end
 

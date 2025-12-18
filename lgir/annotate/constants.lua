@@ -20,9 +20,7 @@ end
 function M.list(constants, docs)
   local lines = {}
   for name, value in pairs(constants) do
-    if name ~= "_namespace" then
-      table.insert(lines, M.field(name, value, docs))
-    end
+    table.insert(lines, M.field(name, value, docs))
   end
   return lines
 end

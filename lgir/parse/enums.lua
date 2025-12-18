@@ -13,14 +13,14 @@ local M = {}
 ---@param enum table
 ---@return string? name, lgir.gir_docs.enum?
 function M.enum(enum)
-  local name = helpers.get_name(enum)
+  local name = helpers.parse_name(enum)
   if name == nil then
     return nil
   end
 
   local docs = {
     doc = helpers.get_doc(enum),
-    members = {}
+    members = {},
   }
 
   for i = 1, #enum.member do

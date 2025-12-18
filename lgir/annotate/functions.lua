@@ -1,5 +1,4 @@
 local table, pairs = table, pairs
-local utils = require("lgir.utils")
 local helpers = require("lgir.annotate.helpers")
 
 local M = {}
@@ -54,9 +53,12 @@ end
 ---@param params lgir.gir_docs.param[]
 ---@return string[] lines
 function M.out_params(params)
-  return utils.collect(utils.map(params, function(out)
-    return helpers.inline_doc(("---@return %s %s"):format(out.type, out.name), out.doc, true)
-  end))
+  local lines = {}
+  for i = 1, #params do
+    out = params[i]
+    lines[i] = helpers.inline_doc(("---@return %s %s"):format(out.type, out.name), out.doc, true)
+  end
+  return lines
 end
 
 ---Annotates a given function, which can be a method.
@@ -68,7 +70,7 @@ end
 function M.func(class, name, docs, as_method)
   local lines = { "" }
   if docs.doc ~= nil then
-    table.insert(lines, helpers.format_doc(docs.doc))
+    table.insert(lines, helpers.doccomment(docs.doc))
   end
 
   local param_lines = M.param_list(docs.params)
@@ -95,30 +97,34 @@ end
 ---@param as_methods? boolean
 ---@return string[]
 function M.function_list(class, func_docs, functions, as_methods)
-  if functions == nil then
-    local result = {}
+  local result = {}
+
+  if functions then
+    for i = 1, #functions do
+      local func_name = functions[i]
+      local docs = func_docs[func_name]
+      if docs ~= nil then
+        table.insert(result, M.func(class, func_name, docs, as_methods))
+      end
+    end
+  else
     for name, docs in pairs(func_docs) do
       table.insert(result, M.func(class, name, docs, as_methods))
     end
-    return result
   end
 
-  return utils.collect(utils.filter_map(functions, function(func_name)
-    local docs = func_docs[func_name]
-    if docs ~= nil then
-      return M.func(class, func_name, docs, as_methods)
-    end
-  end))
+  return result
 end
 
 ---Annotates a callback.
 ---@param namespace string
 ---@param name string
 ---@param docs lgir.gir_docs.func
+---@return string[]
 function M.callback(namespace, name, docs)
   local lines = { "" }
   if docs.doc ~= nil then
-    table.insert(lines, helpers.format_doc(docs.doc))
+    table.insert(lines, helpers.doccomment(docs.doc))
   end
 
   local param_lines = M.param_list(docs.params, true)

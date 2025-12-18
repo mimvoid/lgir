@@ -11,7 +11,7 @@ local M = {}
 function M.alias(info, docs)
   local lines = { "" }
   if docs and docs.doc then
-    table.insert(lines, helpers.format_doc(docs.doc))
+    table.insert(lines, helpers.doccomment(docs.doc))
   end
 
   table.insert(lines, ("---@alias %sKeys"):format(info._name))
@@ -39,25 +39,24 @@ end
 
 ---Writes type annotations for enums (or bitfields) and field annotations for the
 ---top-level repository class.
----@param enums table
----@param gir_enum_docs table<string, lgir.gir_docs.enum>
----@return string[]? aliases, string[]? fields
+---@param enums table?
+---@param gir_enum_docs table<string, lgir.gir_docs.enum>?
+---@return lgir.annotations
 function M.list(enums, gir_enum_docs)
   if enums == nil or gir_enum_docs == nil then
-    return nil
+    return {}
   end
 
-  local alias_lines = {}
-  local field_lines = {}
+  local result = { classes = {}, fields = {} }
 
   for name, data in pairs(enums) do
     if name:sub(1, 1) ~= "_" then
-      table.insert(alias_lines, M.alias(data, gir_enum_docs[name]))
-      table.insert(field_lines, M.field(name, data._name))
+      table.insert(result.classes, M.alias(data, gir_enum_docs[name]))
+      table.insert(result.classes, M.field(name, data._name))
     end
   end
 
-  return alias_lines, field_lines
+  return result
 end
 
 return M

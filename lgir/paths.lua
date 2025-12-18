@@ -28,10 +28,11 @@ function M.gir_dirs()
     return nil
   end
 
-  local datadirs = utils.split(datadirs_env, ":")
-  return utils.collect(utils.map(datadirs, function(dir)
-    return dir .. "/gir-1.0"
-  end))
+  local dirs = utils.split(datadirs_env, ":")
+  for i = 1, #dirs do
+    dirs[i] = dirs[i] .. "/gir-1.0"
+  end
+  return dirs
 end
 
 return M

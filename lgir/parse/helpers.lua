@@ -35,14 +35,24 @@ local keywords = utils.set({
 ---@param name string
 ---@return string
 function M.fix_keyword(name)
-  return keywords[name] == nil and name or "_" .. name
+  if keywords[name] then
+    return "_" .. name
+  end
+  return name
+end
+
+---Searches for the name attribute and returns the value as-is.
+---@param tabl table
+---@return string? name
+function M.get_name(tabl)
+  return utils.get_nested(tabl, "_attr", "name")
 end
 
 ---Searches for the name attribute and fixes any conflicts with Lua keywords.
 ---@param tabl table
 ---@return string? name
-function M.get_name(tabl)
-  local name = utils.get_nested(tabl, "_attr", "name")
+function M.parse_name(tabl)
+  local name = M.get_name(tabl)
   if name ~= nil then
     return M.fix_keyword(name)
   end
@@ -59,7 +69,7 @@ end
 ---@param tabl table
 ---@return string? name, string? doc
 function M.get_name_doc(tabl)
-  return M.get_name(tabl), M.get_doc(tabl)
+  return M.parse_name(tabl), M.get_doc(tabl)
 end
 
 ---Maps an array and returns all items' names as keys and documentation as values.
@@ -80,11 +90,11 @@ end
 
 ---Parses the type from GIR and formats it into a Lua-friendly type.
 ---@param tabl table
----@return string? type
-function M.get_type(tabl)
+---@return string type
+function M.parse_type(tabl)
   local array_depth = tabl.array and 1 or 0
   local type = array_depth ~= 0 and tabl.array.type or tabl.type
-  local name = utils.get_nested(type, "_attr", "name") or "unknown"
+  local name = M.get_name(type) or "unknown"
 
   if name == "GLib.List" or name == "GLib.SList" then
     array_depth = array_depth + 1

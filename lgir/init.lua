@@ -16,14 +16,16 @@ end
 --- Find, parse, and write annotations for each input GIR
 for i = 1, #parsed_args.girs do
   local gir, lua = paths.process_gir_filename(parsed_args.girs[i])
-  local file, path = reader.find_file(gir, gir_dirs)
+  local file, path = reader.find_file_in_dirs(gir, gir_dirs)
 
   if file == nil or path == nil then
     print("Could not find GIR file " .. gir)
     os.exit(1)
   end
 
-  local gir_table = reader.parse_gir_xml(file) -- Load the GIR XML into a Lua table
+  local gir_table = reader.parse_gir_file(file) -- Load the GIR XML into a Lua table
+  file:close()
+
   local gir_docs = parse(gir_table, path) -- Organize and keep the information we want
   annotate(gir_docs, ("%s/%s"):format(parsed_args.output, lua)) -- Write to the file
 end

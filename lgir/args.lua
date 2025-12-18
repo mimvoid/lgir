@@ -20,7 +20,7 @@ Options:
 ---@param long_arg string
 ---@param short_arg? string
 ---@return string? value, integer skip
-local function parse_arg_value(i, long_arg, short_arg)
+local function check_arg_value(i, long_arg, short_arg)
   local a = arg[i]
   local skip = 0
 
@@ -58,9 +58,7 @@ end
 ---Parse commandline arguments, exits on incorrect inputs.
 ---@return { girs: string[], output: string }
 return function()
-  local args = {
-    girs = {},
-  }
+  local parsed_args = { girs = {} }
 
   local i = 1
   local len = #arg
@@ -69,7 +67,7 @@ return function()
     local a = arg[i]
 
     if a ~= nil and a:sub(1, 1) ~= "-" then
-      table.insert(args.girs, a)
+      table.insert(parsed_args.girs, a)
     else
       if a == "--help" or a == "-h" then
         print(help_str)
@@ -79,9 +77,9 @@ return function()
         os.exit(0)
       end
 
-      local value, skip = parse_arg_value(i, "--output", "-o")
+      local value, skip = check_arg_value(i, "--output", "-o")
       if value ~= nil then
-        args.output = value
+        parsed_args.output = value
         i = i + skip
       else
         print("Unknown option: " .. a)
@@ -92,13 +90,13 @@ return function()
     i = i + 1
   end
 
-  if args.output == nil then
+  if parsed_args.output == nil then
     print("No output directory provided!")
     os.exit(1)
-  elseif #args.girs == 0 then
+  elseif #parsed_args.girs == 0 then
     print("No gir files provided!")
     os.exit(1)
   end
 
-  return args
+  return parsed_args
 end

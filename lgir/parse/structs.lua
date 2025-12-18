@@ -14,7 +14,7 @@ local M = {}
 ---@param record table
 ---@return string? name, lgir.gir_docs.struct? struct
 function M.struct(record)
-  local name = helpers.get_name(record)
+  local name = helpers.parse_name(record)
   if name == nil then
     return nil
   end

@@ -11,7 +11,7 @@ local M = {}
 ---@param field table
 ---@return string? name, lgir.gir_docs.field? field
 function M.field(field)
-  local name = helpers.get_name(field)
+  local name = helpers.parse_name(field)
   if not name then
     return nil
   end
@@ -19,7 +19,7 @@ function M.field(field)
   local field_docs = {
     doc = helpers.get_doc(field),
     writable = field._attr and field._attr.writable == "1",
-    type = helpers.get_type(field),
+    type = helpers.parse_type(field),
   }
 
   if field_docs.type ~= nil then

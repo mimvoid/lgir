@@ -1,11 +1,15 @@
 local table, select, pairs = table, select, pairs
 local lgi = require("lgi")
 
-local constants = require("lgir.annotate.constants")
-local enums = require("lgir.annotate.enums")
-local funcs = require("lgir.annotate.functions")
-local structs = require("lgir.annotate.structs")
+local constant = require("lgir.annotate.constants")
+local enum = require("lgir.annotate.enums")
+local func = require("lgir.annotate.functions")
+local struct = require("lgir.annotate.structs")
 local utils = require("lgir.utils")
+
+---@class lgir.annotations
+---@field classes string[]?
+---@field fields string[]?
 
 ---@param file file*
 ---@param typelib table
@@ -44,12 +48,12 @@ return function(gir_docs, filename)
 
   write_header(file, typelib)
 
-  local enum_classes, enum_fields = enums.list(typelib._enum, gir_docs.enums)
-  local bit_classes, bit_fields = enums.list(typelib._bitfield, gir_docs.bitfields)
-  local union_classes, union_fields = structs.list(typelib._union, gir_docs.unions)
-  local struct_classes, struct_fields = structs.list(typelib._struct, gir_docs.structs)
-  local iface_classes, iface_fields = structs.list(typelib._interface, gir_docs.interfaces, true)
-  local classes, class_fields = structs.list(typelib._class, gir_docs.classes, true)
+  local enums = enum.list(typelib._enum, gir_docs.enums)
+  local bitfields = enum.list(typelib._bitfield, gir_docs.bitfields)
+  local unions = struct.list(typelib._union, gir_docs.unions)
+  local structs = struct.list(typelib._struct, gir_docs.structs)
+  local ifaces = struct.list(typelib._interface, gir_docs.interfaces, true)
+  local classes = struct.list(typelib._class, gir_docs.classes, true)
 
   local function write_sections(...)
     for i = 1, select("#", ...) do
@@ -62,25 +66,26 @@ return function(gir_docs, filename)
 
   -- Before repository definition
   -- Basic types, structs, interfaces, and classes
-  write_sections(enum_classes, bit_classes)
-  if gir_docs.callbacks ~= nil then
-    file:write("\n", table.concat(funcs.callback_list(typelib._name, gir_docs.callbacks), "\n"))
+  write_sections(enums.classes, bitfields.classes)
+  if gir_docs.callbacks then
+    file:write("\n", table.concat(func.callback_list(typelib._name, gir_docs.callbacks), "\n"))
   end
-  write_sections(union_classes, struct_classes, iface_classes, classes)
+  write_sections(unions.classes, structs.classes, ifaces.classes, classes.classes)
 
   -- Annotate repository and fields
   file:write("\n\n", "---@class ", typelib._name)
 
-  if typelib._constant ~= nil then
-    file:write("\n", table.concat(constants.list(typelib._constant, gir_docs.constants), "\n"))
+  if typelib._constant then
+    file:write("\n", table.concat(constant.list(typelib._constant, gir_docs.constants), "\n"))
   end
-  write_sections(enum_fields, bit_fields, union_fields, struct_fields, iface_fields, class_fields)
+  write_sections(enums.fields, bitfields.fields, unions.fields, structs.fields, ifaces.fields, classes.fields)
 
   file:write("\n", "local ", typelib._name, " = {}")
 
   -- Annotate repository functions
-  if typelib._function ~= nil and gir_docs.functions ~= nil then
-    local fns = funcs.function_list(typelib._name, gir_docs.functions, utils.collect(utils.keys(typelib._function)))
+  if typelib._function and gir_docs.functions then
+    local fn_names = utils.collect(utils.keys(typelib._function))
+    local fns = func.function_list(typelib._name, gir_docs.functions, fn_names)
     file:write("\n", table.concat(fns, "\n"))
   end
 

@@ -18,12 +18,12 @@ local M = {}
 ---@param param table
 ---@return lgir.gir_docs.param? info, boolean? out
 function M.param(param)
-  local result = { type = helpers.get_type(param) }
+  local result = { type = helpers.parse_type(param) }
   if not result.type then
     return nil
   end
 
-  result.name = helpers.get_name(param)
+  result.name = helpers.parse_name(param)
   if not result.name then
     return nil
   end
@@ -38,7 +38,7 @@ end
 ---@param return_value table
 ---@return { type: string, doc: string? }?
 function M.return_value(return_value)
-  local type_name = helpers.get_type(return_value)
+  local type_name = helpers.parse_type(return_value)
   if type_name ~= nil then
     return { type = type_name, doc = helpers.get_doc(return_value) }
   end
@@ -50,7 +50,7 @@ end
 ---@param func table
 ---@return string? name, lgir.gir_docs.func? result
 function M.func(func)
-  local name = helpers.get_name(func)
+  local name = helpers.parse_name(func)
   local return_val = func["return-value"]
 
   if name == nil or return_val == nil then

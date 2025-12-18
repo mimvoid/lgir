@@ -11,7 +11,7 @@ end
 ---Comments a potentially multiline documentation.
 ---@param doc string
 ---@return string
-function M.format_doc(doc)
+function M.doccomment(doc)
   return "---" .. M.reflow(doc)
 end
 
