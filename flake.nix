@@ -31,7 +31,7 @@
 
             nativeBuildInputs = [ pkgs.pkg-config ];
             packages = builtins.attrValues {
-              inherit (pkgs) glib gobject-introspection lua-language-server;
+              inherit (pkgs) glib gobject-introspection emmylua-ls;
               inherit luaEnv;
             };
 
