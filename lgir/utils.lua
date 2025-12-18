@@ -23,7 +23,7 @@ end
 ---@param str string The string to trim
 ---@return string # The trimmed string
 function M.strip(str)
-  return str:match("^%s*(.-)%s*$")
+  return str:match("^%s*(.-)%s*$") or str
 end
 
 ---Checks if a string starts with a given prefix.

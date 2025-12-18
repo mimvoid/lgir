@@ -33,7 +33,7 @@ end
 ---Writes annotations to a file.
 ---@param gir_docs lgir.gir_docs
 ---@param filename string
----@return nil
+---@return string?
 return function(gir_docs, filename)
   local typelib = lgi.require(gir_docs.name, gir_docs.version):_resolve(true)
 

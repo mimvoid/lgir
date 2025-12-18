@@ -37,7 +37,7 @@ function M.inline_doc(type_annotation, doc, reflow, with_comment)
 
   local result = { type_annotation }
   if with_comment then
-    result[2] = "#"
+    table.insert(result, "#")
   end
 
   local doc_annotations = reflow and M.reflow(doc) or M.inline(doc)

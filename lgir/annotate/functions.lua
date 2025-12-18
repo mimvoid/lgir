@@ -62,7 +62,7 @@ end
 function M.func(class, name, docs, as_method)
   local lines = { "" }
   if docs.doc ~= nil then
-    lines[2] = helpers.format_doc(docs.doc)
+    table.insert(lines, helpers.format_doc(docs.doc))
   end
 
   local param_names, param_lines = M.param_list(docs.params)
@@ -112,7 +112,7 @@ end
 function M.callback(namespace, name, docs)
   local lines = { "" }
   if docs.doc ~= nil then
-    lines[2] = helpers.format_doc(docs.doc)
+    table.insert(lines, helpers.format_doc(docs.doc))
   end
 
   local param_names, param_lines = M.param_list(docs.params, true)

@@ -22,10 +22,14 @@ Options:
 ---@return string? value, integer skip
 local function parse_arg_value(i, long_arg, short_arg)
   local a = arg[i]
+  local skip = 0
+
+  if a == nil then
+    return nil, skip
+  end
 
   local arg_name = long_arg
   local value = utils.remove_prefix(a, arg_name)
-  local skip = 0
 
   if value == nil and short_arg ~= nil then
     arg_name = short_arg
@@ -64,7 +68,7 @@ return function()
   while i <= len do
     local a = arg[i]
 
-    if a:sub(1, 1) ~= "-" then
+    if a ~= nil and a:sub(1, 1) ~= "-" then
       table.insert(args.girs, a)
     else
       if a == "--help" or a == "-h" then
