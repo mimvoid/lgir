@@ -19,22 +19,28 @@ function M.param(param, for_callback)
   return helpers.inline_doc(template:format(param.name, param.type), param.doc, true)
 end
 
----Makes a list of parameter names and parameter annotations. The former can be used to write the
----parameters in the function signature.
+---Makes a list of parameter annotations.
 ---@param params lgir.gir_docs.param[]
 ---@param for_callback boolean?
----@return string[] param_names, string[] param_lines
+---@return string[]
 function M.param_list(params, for_callback)
-  local names = {}
   local lines = {}
-
   for i = 1, #params do
-    local param = params[i]
-    table.insert(names, param.name)
-    table.insert(lines, M.param(param, for_callback))
+    lines[i] = M.param(params[i], for_callback)
   end
+  return lines
+end
 
-  return names, lines
+---Lists inline function parameters in the form of `param_name: type, ...`.
+---@param params lgir.gir_docs.param[]
+---@return string
+function M.inline_params(params)
+  local parts = {}
+  for i = 1, #params do
+    param = params[i]
+    parts[i] = ("%s: %s"):format(param.name, param.type)
+  end
+  return table.concat(parts, ", ")
 end
 
 ---Formats the return value.
@@ -65,7 +71,7 @@ function M.func(class, name, docs, as_method)
     table.insert(lines, helpers.format_doc(docs.doc))
   end
 
-  local param_names, param_lines = M.param_list(docs.params)
+  local param_lines = M.param_list(docs.params)
   if #param_lines ~= 0 then
     table.insert(lines, table.concat(param_lines, "\n"))
   end
@@ -76,7 +82,7 @@ function M.func(class, name, docs, as_method)
   end
 
   local sig_template = as_method and "function %s:%s(%s) end" or "function %s.%s(%s) end"
-  local sig = sig_template:format(class, name, table.concat(param_names, ", "))
+  local sig = sig_template:format(class, name, M.inline_params(docs.params))
   table.insert(lines, sig)
 
   return table.concat(lines, "\n")
@@ -115,7 +121,7 @@ function M.callback(namespace, name, docs)
     table.insert(lines, helpers.format_doc(docs.doc))
   end
 
-  local param_names, param_lines = M.param_list(docs.params, true)
+  local param_lines = M.param_list(docs.params, true)
   if #param_lines ~= 0 then
     table.insert(lines, table.concat(param_lines, "\n"))
   end
@@ -129,7 +135,7 @@ function M.callback(namespace, name, docs)
   end
 
   local sig = "---@alias %s.%s fun(%s): %s"
-  table.insert(lines, sig:format(namespace, name, table.concat(param_names, ", "), docs.return_value.type))
+  table.insert(lines, sig:format(namespace, name, M.inline_params(docs.params), docs.return_value.type))
 
   return lines
 end

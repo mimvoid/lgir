@@ -82,14 +82,24 @@ end
 ---@param tabl table
 ---@return string? type
 function M.get_type(tabl)
-  local is_array = tabl.array ~= nil
-  local type_name = utils.get_nested(is_array and tabl.array or tabl, "type", "_attr", "name") or "unknown"
+  local array_depth = tabl.array and 1 or 0
+  local type = array_depth ~= 0 and tabl.array.type or tabl.type
+  local name = utils.get_nested(type, "_attr", "name") or "unknown"
 
-  local type_parts = { gtypes[type_name] or type_name }
-  if is_array then
-    table.insert(type_parts, "[]")
+  if name == "GLib.List" or name == "GLib.SList" then
+    array_depth = array_depth + 1
+    name = utils.get_nested(type, "type", "_attr", "name") or "unknown"
+  elseif name == "GLib.HashTable" then
+    local key_type = utils.get_nested(type, "type", 0, "_attr", "name") or "unknown"
+    local value_type = utils.get_nested(type, "type", 1, "_attr", "name") or "unknown"
+    name = ("table<%s, %s>"):format(key_type, value_type)
   end
-  if tabl.nullable == "1" or tabl["allow-none"] == "1" then
+
+  local type_parts = { gtypes[name] or name }
+  if array_depth ~= 0 then
+    table.insert(type_parts, ("[]"):rep(array_depth))
+  end
+  if utils.get_nested(tabl, "_attr", "allow-none") == "1" then
     table.insert(type_parts, "?")
   end
 
